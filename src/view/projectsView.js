@@ -1,5 +1,5 @@
 const generateOneProjectElement = function (projectName) {
-  const projectElement = document.createElement("div");
+  const projectElement = document.createElement("button");
   projectElement.setAttribute("class", "todos-project");
   projectElement.textContent = projectName;
   return projectElement;

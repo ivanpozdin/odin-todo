@@ -5,14 +5,14 @@ export default function generateView(handleProjectClick) {
         <button type="button" id="add-todo-btn">+ to-do</button>
         <button type="button">+ project</button>
       </div>
-      <div class="fixed-todos-project todos-project" id="inbox">📬 inbox</div>
-      <div class="fixed-todos-project todos-project">🔥 today</div>
-      <div class="fixed-todos-project todos-project">📅 someday</div>
-      <div class="fixed-todos-project todos-project" id="anytime">
+      <button class="fixed-todos-project todos-project" id="inbox">📬 inbox</button>
+      <button class="fixed-todos-project todos-project">🔥 today</button>
+      <button class="fixed-todos-project todos-project">📅 someday</button>
+      <button class="fixed-todos-project todos-project" id="anytime">
         🗓️ anytime
-      </div>
-      <div class="fixed-todos-project todos-project">✅ completed</div>
-      <div class="fixed-todos-project todos-project " id="trash-project">🗑️ trash</div>
+      </button>
+      <button class="fixed-todos-project todos-project">✅ completed</button>
+      <button class="fixed-todos-project todos-project " id="trash-project">🗑️ trash</button>
       <div class="user-projects-container">
       </div>
     </div>

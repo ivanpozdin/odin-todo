@@ -33,6 +33,11 @@ body {
   border-bottom: 0.15rem solid #000;
 }
 
+.todos-project {
+  border: none;
+  background-color: transparent;
+}
+
 .todos-project:hover {
   background-color: #e5e7eb;
 }
