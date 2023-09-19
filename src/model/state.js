@@ -27,6 +27,13 @@ export default class State {
     return toDo.id;
   }
 
+  addProject(projectName) {
+    if (this.#projects[projectName]) {
+      return;
+    }
+    this.#projects[projectName] = [];
+  }
+
   removeToDo(toDoId) {
     this.#toDos[toDoId].projects.forEach((project) => {
       const deleteIndex = this.#projects[project].findIndex(

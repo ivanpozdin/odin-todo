@@ -3,7 +3,7 @@ export default function generateView(handleProjectClick) {
   <div class="sidebar">
       <div class="projects-controls">
         <button type="button" id="add-todo-btn">+ to-do</button>
-        <button type="button">+ project</button>
+        <button type="button" id="add-project-btn">+ project</button>
       </div>
       <button class="fixed-todos-project todos-project" id="inbox">📬 inbox</button>
       <button class="fixed-todos-project todos-project">🔥 today</button>

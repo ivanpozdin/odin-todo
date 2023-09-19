@@ -5,12 +5,18 @@ import generateView from "./view/view.js";
 import generateAllToDosInProject from "./view/allToDosInProject.js";
 import handleGeneratingNewToDo from "./view/addingNewToDo.js";
 import generateProjectsView from "./view/projectsView.js";
+import handleGeneratingNewToProject from "./view/newProject.js";
 
 const handleProjectClick = function (projectName) {
   generateAllToDosInProject(
     projectName,
     state.getAllToDosInProject(projectName)
   );
+};
+
+const handleAddNewProject = function (projectName) {
+  state.addProject(projectName);
+  generateProjectsView(state.userProjectNames, handleProjectClick);
 };
 
 const fixedProjects = ["inbox", "today", "someday", "anytime"];
@@ -87,3 +93,4 @@ state.getAllToDosInProject("study").forEach((toDo) => {
 console.log(state.userProjectNames);
 generateProjectsView(state.userProjectNames, handleProjectClick);
 generateAllToDosInProject("study", state.getAllToDosInProject("study"));
+handleGeneratingNewToProject(handleAddNewProject);
