@@ -9,6 +9,7 @@ export default function handleGeneratingNewToDo(handler) {
       toDoElement.querySelector(".description-todo"),
     ];
     toDoListElement.insertAdjacentElement("afterbegin", toDoElement);
+    titleElement.focus();
     titleElement.addEventListener("input", function () {
       if (titleElement.textContent === "") {
         titleElement.innerHTML = "";

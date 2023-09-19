@@ -17,7 +17,7 @@ export default function generateView(handleProjectClick) {
       </div>
     </div>
     <div class="content">
-      <h2 class="project-title">Inbox</h2>
+      <h2 class="project-title">📬 inbox</h2>
       <ul class="todo-list">
       </ul>
     </div>

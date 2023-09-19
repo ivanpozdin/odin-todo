@@ -16,7 +16,6 @@ export default function generateToDoElement(todo = null) {
       <button class="remove-todo-btn todo-controls">🗑️</button>
     </div>
   `;
-  console.log(toDoHtml);
   toDoContainer.insertAdjacentHTML("afterbegin", toDoHtml);
   return toDoContainer;
 }

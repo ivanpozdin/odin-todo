@@ -3,7 +3,7 @@ export default class State {
   #toDos = {};
   #completedToDos = {};
   #projects = {};
-  #currentProject;
+  #currentProject = "📬 inbox";
   #fixedProjects;
   constructor(fixedProjects) {
     fixedProjects.forEach((project) => (this.#projects[project] = []));
@@ -13,11 +13,21 @@ export default class State {
   set fixedProjects(projectsNames) {
     this.#fixedProjects = projectsNames;
   }
+  get currentProject() {
+    return this.#currentProject;
+  }
+  set currentProject(projectName) {
+    if (projectName && this.#projects.hasOwnProperty(projectName)) {
+      this.#currentProject = projectName;
+    }
+  }
 
   addToDo(title, description, projects, date = null) {
-    const toDo = new ToDo(title, description, projects, date);
+    console.log(this.#currentProject);
+    const projectWithCurrent = projects.concat(this.#currentProject);
+    const toDo = new ToDo(title, description, projectWithCurrent, date);
     this.#toDos[toDo.id] = toDo;
-    projects.forEach((project) => {
+    projectWithCurrent.forEach((project) => {
       if (this.#projects[project]) {
         this.#projects[project].unshift(toDo);
       } else {
@@ -49,7 +59,9 @@ export default class State {
     this.removeToDo(toDoId);
   }
 
-  getAllToDosInProject(project) {
+  getAllToDosInProject(project = null) {
+    if (!project) return this.#projects[this.#currentProject];
+    this.#currentProject = project;
     return this.#projects[project];
   }
 
