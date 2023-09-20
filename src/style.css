@@ -1,6 +1,12 @@
 :root {
   font-size: 62.5%;
 }
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 body {
   margin: 0;
   display: grid;
@@ -55,7 +61,7 @@ body {
 .todo {
   display: grid;
   grid-template-columns: auto 80fr 10fr;
-  grid-template-rows: repeat(2, auto);
+  grid-template-rows: repeat(3, auto);
   font-size: 2rem;
   column-gap: 0.5rem;
   row-gap: 1rem;
@@ -86,10 +92,6 @@ body {
   width: 100%;
 }
 
-/* .title-todo:read-write:focus,
-.description-todo:read-write:focus {
-  outline: none;
-} */
 .todo-controls-container {
   grid-area: 2/ 3/3/ 4;
   display: flex;
@@ -123,4 +125,80 @@ body {
 .project-title {
   text-align: center;
   font-size: 3rem;
+}
+
+.projects-selection {
+  position: fixed;
+  width: auto;
+  height: 200px;
+  padding: 2rem;
+  border: 3px solid #fff;
+  background-color: #f3f4f6;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow-y: scroll;
+  font-size: 1.6rem;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.projects-selection legend {
+  font-size: 2.5rem;
+}
+
+#add-project-selection-btn {
+  font-size: 1.6rem;
+}
+
+.project-selection-container {
+  grid-area: 3/2/4/3;
+  margin: 0;
+  display: flex;
+  gap: 1rem;
+}
+
+.project-selection {
+  padding: 0.3rem 1.5rem;
+}
+
+.add-project-to-todo-btn {
+  border: 1px transparent solid;
+  box-sizing: border-box;
+  padding: 0.3rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 2rem;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-project-to-todo-btn:hover {
+  border: 1px black solid;
+}
+.delete-project-in-project-selection-btn {
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 50%;
+}
+.delete-project-in-project-selection-btn:hover {
+  border: 1px solid #000;
+}
+
+.one-project-selection-container {
+  padding: 0.5rem 1.5rem;
+  padding-right: 0.5rem;
+  display: flex;
+  gap: 1rem;
+  border-radius: 2rem;
+  background-color: aquamarine;
+}
+
+.project-selection:read-write:focus {
+  outline: none;
 }
