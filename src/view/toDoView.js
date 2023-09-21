@@ -2,7 +2,7 @@ const createProjectsContainer = function () {
   const projectSelectionContainer = document.createElement("div");
   projectSelectionContainer.classList.add("project-selection-container");
   const addProjectBtn = document.createElement("button");
-  addProjectBtn.classList.add("add-new-project-to-todo-btn");
+  addProjectBtn.classList.add("add-project-to-todo-btn");
   addProjectBtn.innerText = "➕";
   projectSelectionContainer.insertAdjacentElement("beforeend", addProjectBtn);
   return projectSelectionContainer;

@@ -1,5 +1,4 @@
 import State from "./model/state.js";
-// import state from "./model/model.js";
 import "./style.css";
 import generateView from "./view/view.js";
 import generateAllToDosInProject from "./view/allToDosInProject.js";
@@ -11,6 +10,7 @@ const fixedProjects = ["📬 inbox", "🔥 today", "📅 someday", "🗓️ anyt
 const state = new State(fixedProjects);
 
 const handleProjectClick = function (projectName) {
+  console.log(projectName, state.getAllToDosInProject(projectName));
   generateAllToDosInProject(
     projectName,
     state.getAllToDosInProject(projectName)
@@ -22,9 +22,15 @@ const handleAddNewProject = function (projectName) {
   generateProjectsView(state.userProjectNames, handleProjectClick);
 };
 
-const getNewToDo = function (title, description) {
-  state.addToDo(title, description, ["anytime"], new Date());
+const getNewToDo = function (title, description, projects) {
+  state.addToDo(
+    title,
+    description,
+    ["🗓️ anytime"].concat(projects),
+    new Date()
+  );
   generateAllToDosInProject(state.currentProject, state.getAllToDosInProject());
+  generateProjectsView(state.userProjectNames, handleProjectClick);
 };
 
 const init = function () {

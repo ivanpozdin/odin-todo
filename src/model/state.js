@@ -23,8 +23,9 @@ export default class State {
   }
 
   addToDo(title, description, projects, date = null) {
-    console.log(this.#currentProject);
-    const projectWithCurrent = projects.concat(this.#currentProject);
+    const projectWithCurrent = [
+      ...new Set(projects.concat(this.#currentProject)),
+    ];
     const toDo = new ToDo(title, description, projectWithCurrent, date);
     this.#toDos[toDo.id] = toDo;
     projectWithCurrent.forEach((project) => {
@@ -61,8 +62,8 @@ export default class State {
 
   getAllToDosInProject(project = null) {
     if (!project) return this.#projects[this.#currentProject];
-    this.#currentProject = project;
-    return this.#projects[project];
+    this.#currentProject = project.trim();
+    return this.#projects[this.#currentProject];
   }
 
   editToDo(toDoId, title, description, projects, date = null) {
@@ -79,15 +80,13 @@ export default class State {
     if (!this.#toDos[toDoId]) {
       return;
     }
-    console.log(this.#projects[project]);
     const indexOfToDo = this.#projects[project].findIndex(
       (toDo) => toDo.id === toDoId
     );
-    console.log(`Found index: ${indexOfToDo}`);
+
     if (!indexOfToDo ?? indexOfToDo === 0) {
       return;
     }
-    console.log(`before swap: ${this.#projects[project]}`);
     [
       this.#projects[project][indexOfToDo - 1],
       this.#projects[project][indexOfToDo],
@@ -95,7 +94,6 @@ export default class State {
       this.#projects[project][indexOfToDo],
       this.#projects[project][indexOfToDo - 1],
     ];
-    console.log(`after swap: ${this.#projects[project]}`);
   }
 
   moveToDoPriorityInProjectDown(toDoId, project) {

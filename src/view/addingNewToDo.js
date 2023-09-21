@@ -1,4 +1,16 @@
 import generateToDoElement from "./toDoView.js";
+
+const getProjects = function (toDoElement) {
+  const projectElements = [
+    ...toDoElement.getElementsByClassName("project-selection"),
+  ];
+
+  const projectNames = projectElements.map(
+    (projectElement) => projectElement.textContent
+  );
+  return projectNames;
+};
+
 export default function handleGeneratingNewToDo(handler) {
   const addToDoBtn = document.getElementById("add-todo-btn");
   addToDoBtn.addEventListener("click", function () {
@@ -10,17 +22,6 @@ export default function handleGeneratingNewToDo(handler) {
     ];
     toDoListElement.insertAdjacentElement("afterbegin", toDoElement);
     titleElement.focus();
-    titleElement.addEventListener("input", function () {
-      if (titleElement.textContent === "") {
-        titleElement.innerHTML = "";
-      }
-    });
-
-    descriptionElement.addEventListener("input", function () {
-      if (descriptionElement.textContent === "") {
-        descriptionElement.innerHTML = "";
-      }
-    });
 
     const saveToDoBtn = toDoElement.querySelector(".save-to-do-btn");
     saveToDoBtn.addEventListener("click", function () {
@@ -30,7 +31,12 @@ export default function handleGeneratingNewToDo(handler) {
       ) {
         toDoElement.remove();
       }
-      handler(titleElement.textContent, descriptionElement.textContent);
+      const projects = getProjects(toDoElement) ?? [];
+      handler(
+        titleElement.textContent,
+        descriptionElement.textContent,
+        projects
+      );
     });
   });
 }
