@@ -93,9 +93,13 @@ const generateToDoTitleDescriptionAndControlsHtml = function (todo) {
   return toDoHtml;
 };
 
-export default function generateToDoElement(todo = null) {
+export default function generateToDoElement(
+  todo = null,
+  handleDeleteToDo = (id) => {}
+) {
   const toDoContainer = document.createElement("li");
   toDoContainer.classList.add("todo");
+  toDoContainer.dataset.id = todo?.id ?? "";
   const titleDescriptionControlsHtml =
     generateToDoTitleDescriptionAndControlsHtml(todo);
   toDoContainer.insertAdjacentHTML("afterbegin", titleDescriptionControlsHtml);
@@ -123,5 +127,12 @@ export default function generateToDoElement(todo = null) {
     toDoContainer.insertAdjacentElement("beforeend", projectsContainer);
     handleAddingNewProjects(projectsContainer);
   });
+  toDoContainer
+    .querySelector(".remove-todo-btn")
+    .addEventListener("click", () => {
+      handleDeleteToDo(toDoContainer.dataset.id);
+      toDoContainer.remove();
+    });
+
   return toDoContainer;
 }

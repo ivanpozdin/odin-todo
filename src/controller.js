@@ -13,7 +13,8 @@ const handleProjectClick = function (projectName) {
   console.log(projectName, state.getAllToDosInProject(projectName));
   generateAllToDosInProject(
     projectName,
-    state.getAllToDosInProject(projectName)
+    state.getAllToDosInProject(projectName),
+    handleDeleteToDo
   );
 };
 
@@ -22,9 +23,17 @@ const handleAddNewProject = function (projectName) {
   generateProjectsView(state.userProjectNames, handleProjectClick);
 };
 
+const handleDeleteToDo = function (id) {
+  state.removeToDo(id);
+};
+
 const getNewToDo = function (title, description, projects, date) {
   state.addToDo(title, description, ["🗓️ anytime"].concat(projects), date);
-  generateAllToDosInProject(state.currentProject, state.getAllToDosInProject());
+  generateAllToDosInProject(
+    state.currentProject,
+    state.getAllToDosInProject(),
+    handleDeleteToDo
+  );
   generateProjectsView(state.userProjectNames, handleProjectClick);
 };
 

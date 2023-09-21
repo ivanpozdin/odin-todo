@@ -18,10 +18,7 @@ const getDate = function (toDoElement) {
   return date;
 };
 
-export default function handleGeneratingNewToDo(
-  handler,
-  handleDeleteToDo = () => {}
-) {
+export default function handleGeneratingNewToDo(handler) {
   const addToDoBtn = document.getElementById("add-todo-btn");
   addToDoBtn.addEventListener("click", function () {
     const toDoListElement = document.querySelector(".todo-list");
