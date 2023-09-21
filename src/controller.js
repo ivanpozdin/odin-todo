@@ -22,13 +22,8 @@ const handleAddNewProject = function (projectName) {
   generateProjectsView(state.userProjectNames, handleProjectClick);
 };
 
-const getNewToDo = function (title, description, projects) {
-  state.addToDo(
-    title,
-    description,
-    ["🗓️ anytime"].concat(projects),
-    new Date()
-  );
+const getNewToDo = function (title, description, projects, date) {
+  state.addToDo(title, description, ["🗓️ anytime"].concat(projects), date);
   generateAllToDosInProject(state.currentProject, state.getAllToDosInProject());
   generateProjectsView(state.userProjectNames, handleProjectClick);
 };
