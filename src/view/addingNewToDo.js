@@ -11,7 +11,17 @@ const getProjects = function (toDoElement) {
   return projectNames;
 };
 
-export default function handleGeneratingNewToDo(handler) {
+const getDate = function (toDoElement) {
+  const dateControl = toDoElement.querySelector('input[type="date"]');
+  let date = null;
+  if (dateControl.value) date = new Date(dateControl.valueAsNumber);
+  return date;
+};
+
+export default function handleGeneratingNewToDo(
+  handler,
+  handleDeleteToDo = () => {}
+) {
   const addToDoBtn = document.getElementById("add-todo-btn");
   addToDoBtn.addEventListener("click", function () {
     const toDoListElement = document.querySelector(".todo-list");
@@ -32,10 +42,12 @@ export default function handleGeneratingNewToDo(handler) {
         toDoElement.remove();
       }
       const projects = getProjects(toDoElement) ?? [];
+      const date = getDate(toDoElement);
       handler(
         titleElement.textContent,
         descriptionElement.textContent,
-        projects
+        projects,
+        date
       );
     });
   });

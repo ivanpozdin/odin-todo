@@ -35,6 +35,7 @@ export default class State {
         this.#projects[project] = [toDo];
       }
     });
+    console.log(this.#toDos);
     return toDo.id;
   }
 

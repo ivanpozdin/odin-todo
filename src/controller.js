@@ -4,7 +4,7 @@ import generateView from "./view/view.js";
 import generateAllToDosInProject from "./view/allToDosInProject.js";
 import handleGeneratingNewToDo from "./view/addingNewToDo.js";
 import generateProjectsView from "./view/projectsView.js";
-import handleGeneratingNewToProject from "./view/newProject.js";
+import handleGeneratingNewProject from "./view/newProject.js";
 
 const fixedProjects = ["📬 inbox", "🔥 today", "📅 someday", "🗓️ anytime"];
 const state = new State(fixedProjects);
@@ -36,7 +36,7 @@ const getNewToDo = function (title, description, projects) {
 const init = function () {
   generateView(handleProjectClick);
   handleGeneratingNewToDo(getNewToDo);
-  handleGeneratingNewToProject(handleAddNewProject);
+  handleGeneratingNewProject(handleAddNewProject);
   generateProjectsView(state.userProjectNames, handleProjectClick);
 };
 init();

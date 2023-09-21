@@ -5,7 +5,7 @@ const generateNewProjectElement = function () {
   return projectElement;
 };
 
-export default function handleGeneratingNewToProject(handler) {
+export default function handleGeneratingNewProject(handler) {
   const addProjectBtn = document.getElementById("add-project-btn");
   addProjectBtn.addEventListener("click", function () {
     const projectContainer = document.querySelector(".user-projects-container");

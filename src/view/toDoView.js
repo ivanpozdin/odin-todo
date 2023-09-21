@@ -85,7 +85,7 @@ const generateToDoTitleDescriptionAndControlsHtml = function (todo) {
   }</div>
   <button class="save-to-do-btn">💾</button>
   <div class="todo-controls-container">
-    <button class="when-btn todo-controls">📅</button>
+    <input type="date" value="" />
     <button class="projects-btn todo-controls">🏷️</button>
     <button class="remove-todo-btn todo-controls">🗑️</button>
   </div>
@@ -99,7 +99,9 @@ export default function generateToDoElement(todo = null) {
   const titleDescriptionControlsHtml =
     generateToDoTitleDescriptionAndControlsHtml(todo);
   toDoContainer.insertAdjacentHTML("afterbegin", titleDescriptionControlsHtml);
-
+  if (todo?.date) {
+    toDoContainer.querySelector('input[type="date"]').valueAsDate = todo.date;
+  }
   toDoContainer
     .querySelector(".projects-btn")
     .addEventListener("click", (e) => {
