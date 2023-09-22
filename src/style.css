@@ -165,7 +165,8 @@ body {
 }
 
 .project-selection {
-  padding: 0.3rem 1rem;
+  padding: 0 0.5rem;
+  font-size: 1.5rem;
 }
 
 .add-project-to-todo-btn {
@@ -184,22 +185,23 @@ body {
   border: 1px black solid;
 }
 .delete-project-in-project-selection-btn {
-  padding: 0.5rem 1rem;
+  padding: 0.3;
   background-color: transparent;
   border: 1px solid transparent;
   border-radius: 50%;
 }
 .delete-project-in-project-selection-btn:hover {
-  border: 1px solid #000;
+  /* border: 1px solid #000; */
+  background-color: #aaaaaa4f;
 }
 
 .one-project-selection-container {
-  padding: 0.5rem 1.5rem;
-  padding-right: 0.5rem;
+  padding: 0 0.5rem;
+  /* padding-right: 0.3rem; */
   display: flex;
   align-items: center;
   border-radius: 2rem;
-  background-color: aquamarine;
+  background-color: rgba(127, 255, 212, 0.485);
 }
 
 .project-selection:read-write:focus,

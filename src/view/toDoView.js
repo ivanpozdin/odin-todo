@@ -144,6 +144,13 @@ export default function generateToDoElement(
     });
 
   toDoContainer.querySelector(".projects-btn").addEventListener("click", () => {
+    const existingProjectsContainer = toDoContainer.querySelector(
+      ".project-selection-container"
+    );
+    if (existingProjectsContainer) {
+      existingProjectsContainer.remove();
+      return;
+    }
     const projectsContainer = createProjectsContainer();
 
     toDoContainer.insertAdjacentElement("beforeend", projectsContainer);
