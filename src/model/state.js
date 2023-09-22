@@ -66,14 +66,47 @@ export default class State {
     return this.#projects[this.#currentProject];
   }
 
-  editToDo(toDoId, title, description, projects, date = null) {
+  #updateToDo(toDoId, title, description, projects, date) {
+    this.#toDos[toDoId].title = title;
+    this.#toDos[toDoId].description = description;
+    this.#toDos[toDoId].projects = projects;
+    this.#toDos[toDoId].date = date;
+  }
+
+  editToDo(toDoId, title, description, newProjects, date) {
     if (!this.#toDos[toDoId]) {
+      this.addToDo(title, description, newProjects, date);
       return;
     }
-    this.#toDos[toDoId].title = title ?? this.#toDos[toDoId].title;
-    this.#toDos[toDoId].description = title ?? this.#toDos[toDoId].description;
-    this.#toDos[toDoId].projects = title ?? this.#toDos[toDoId].projects;
-    this.#toDos[toDoId].projects = date ?? this.#toDos[toDoId].date;
+    const oldProjects = this.#toDos[toDoId].projects;
+    const removedProjects = oldProjects.filter(
+      (oldProject) => !newProjects.includes(oldProject)
+    );
+
+    this.#updateToDo(toDoId, title, description, newProjects, date);
+    this.#saveNewProjects(oldProjects, newProjects, toDoId);
+    this.#deleteToDoFromExcludedProjects(removedProjects, toDoId);
+  }
+
+  #deleteToDoFromExcludedProjects(removedProjects, toDoId) {
+    removedProjects.forEach((project) => {
+      this.#projects[project].splice(
+        this.#projects[project].findIndex((todo) => todo.id === toDoId),
+        1
+      );
+    });
+  }
+
+  #saveNewProjects(oldProjects, newProjects, toDoId) {
+    newProjects.forEach((project) => {
+      if (oldProjects.includes(project)) return;
+
+      if (this.#projects[project]) {
+        this.#projects[project].unshift(this.#toDos[toDoId]);
+      } else {
+        this.#projects[project] = [this.#toDos[toDoId]];
+      }
+    });
   }
 
   moveToDoPriorityInProjectUp(toDoId, project) {

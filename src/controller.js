@@ -10,11 +10,11 @@ const fixedProjects = ["📬 inbox", "🔥 today", "📅 someday", "🗓️ anyt
 const state = new State(fixedProjects);
 
 const handleProjectClick = function (projectName) {
-  console.log(projectName, state.getAllToDosInProject(projectName));
   generateAllToDosInProject(
     projectName,
     state.getAllToDosInProject(projectName),
-    handleDeleteToDo
+    handleDeleteToDo,
+    handleEditToDo
   );
 };
 
@@ -23,23 +23,26 @@ const handleAddNewProject = function (projectName) {
   generateProjectsView(state.userProjectNames, handleProjectClick);
 };
 
-const handleDeleteToDo = function (id) {
-  state.removeToDo(id);
-};
-
-const getNewToDo = function (title, description, projects, date) {
-  state.addToDo(title, description, ["🗓️ anytime"].concat(projects), date);
+const handleEditToDo = function (toDoId, title, description, projects, date) {
+  console.log("edit from controller");
+  console.log(toDoId, title, description, projects, date);
+  state.editToDo(toDoId, title, description, projects, date);
   generateAllToDosInProject(
     state.currentProject,
     state.getAllToDosInProject(),
-    handleDeleteToDo
+    handleDeleteToDo,
+    handleEditToDo
   );
   generateProjectsView(state.userProjectNames, handleProjectClick);
 };
 
+const handleDeleteToDo = function (id) {
+  state.removeToDo(id);
+};
+
 const init = function () {
   generateView(handleProjectClick);
-  handleGeneratingNewToDo(getNewToDo);
+  handleGeneratingNewToDo(handleDeleteToDo, handleEditToDo);
   handleGeneratingNewProject(handleAddNewProject);
   generateProjectsView(state.userProjectNames, handleProjectClick);
 };

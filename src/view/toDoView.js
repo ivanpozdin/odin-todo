@@ -66,7 +66,7 @@ const createFullProjectContainer = function (projectName = "") {
   return projectContainer;
 };
 
-const handleAddingNewProjects = function (projectsContainer, projects = []) {
+const handleAddingNewProjectToUI = function (projectsContainer, projects = []) {
   const addProjectBtn = projectsContainer.querySelector(
     ".add-project-to-todo-btn"
   );
@@ -114,36 +114,58 @@ const insertProjectsToProjectContainer = function (
   );
 };
 
-export default function generateToDoElement(
-  todo = null,
-  handleDeleteToDo = (id) => {}
-) {
-  const toDoContainer = document.createElement("li");
-  toDoContainer.classList.add("todo");
-  toDoContainer.dataset.id = todo?.id ?? "";
-  const titleDescriptionControlsHtml =
-    generateToDoTitleDescriptionAndControlsHtml(todo);
-  toDoContainer.insertAdjacentHTML("afterbegin", titleDescriptionControlsHtml);
-  if (todo?.date) {
-    toDoContainer.querySelector('input[type="date"]').valueAsDate = todo.date;
+const getProjects = function (existingProjects, toDoElement) {
+  if (!document.querySelector(".project-selection-container")) {
+    return existingProjects;
   }
-  toDoContainer
-    .querySelector(".projects-btn")
-    .addEventListener("click", (e) => {
-      const projectEnterHtml = `
-      <div 
-        class="projects-todo" 
-        contenteditable="true" 
-        data-placeholder="projects..."
-        >
-      </div>
-      `;
-      toDoContainer
-        .querySelector(".description-todo")
-        .insertAdjacentHTML("afterend", projectEnterHtml);
-    });
+  const projectElements = [
+    ...toDoElement.getElementsByClassName("project-selection"),
+  ];
 
+  const projectNames = projectElements.map(
+    (projectElement) => projectElement.textContent
+  );
+  return projectNames;
+};
+
+const getDate = function (toDoElement) {
+  const dateControl = toDoElement.querySelector('input[type="date"]');
+  let date = null;
+  if (dateControl.value) date = new Date(dateControl.valueAsNumber);
+  return date;
+};
+
+const doOnSaveBtn = function (toDoContainer, todo, handleEditToDo) {
+  const saveToDoBtn = toDoContainer.querySelector(".save-to-do-btn");
+  saveToDoBtn.addEventListener("click", function () {
+    const [titleElement, descriptionElement] = [
+      toDoContainer.querySelector(".title-todo"),
+      toDoContainer.querySelector(".description-todo"),
+    ];
+    const projects = getProjects(todo?.projects ?? [], toDoContainer);
+    const date = getDate(toDoContainer);
+    handleEditToDo(
+      toDoContainer.dataset.id,
+      titleElement.textContent,
+      descriptionElement.textContent,
+      projects,
+      date
+    );
+  });
+};
+
+const doOnDeleteBtn = function (toDoContainer, handleDeleteToDo) {
+  toDoContainer
+    .querySelector(".remove-todo-btn")
+    .addEventListener("click", () => {
+      handleDeleteToDo(toDoContainer.dataset.id);
+      toDoContainer.remove();
+    });
+};
+
+const doOnShowProjects = function (toDoContainer, toDoProjects) {
   toDoContainer.querySelector(".projects-btn").addEventListener("click", () => {
+    console.log("hi!");
     const existingProjectsContainer = toDoContainer.querySelector(
       ".project-selection-container"
     );
@@ -154,15 +176,33 @@ export default function generateToDoElement(
     const projectsContainer = createProjectsContainer();
 
     toDoContainer.insertAdjacentElement("beforeend", projectsContainer);
-    insertProjectsToProjectContainer(projectsContainer, todo?.projects);
-    handleAddingNewProjects(projectsContainer);
+    insertProjectsToProjectContainer(projectsContainer, toDoProjects);
+    handleAddingNewProjectToUI(projectsContainer);
   });
-  toDoContainer
-    .querySelector(".remove-todo-btn")
-    .addEventListener("click", () => {
-      handleDeleteToDo(toDoContainer.dataset.id);
-      toDoContainer.remove();
-    });
+};
+
+const createToDoContainer = function (todo) {
+  const toDoContainer = document.createElement("li");
+  toDoContainer.classList.add("todo");
+  toDoContainer.dataset.id = todo?.id ?? "";
+  const titleDescriptionControlsHtml =
+    generateToDoTitleDescriptionAndControlsHtml(todo);
+  toDoContainer.insertAdjacentHTML("afterbegin", titleDescriptionControlsHtml);
+  if (todo?.date) {
+    toDoContainer.querySelector('input[type="date"]').valueAsDate = todo.date;
+  }
+  return toDoContainer;
+};
+
+export default function generateToDoElement(
+  todo = null,
+  handleDeleteToDo,
+  handleEditToDo
+) {
+  const toDoContainer = createToDoContainer(todo);
+  doOnShowProjects(toDoContainer, todo?.projects ?? []);
+  doOnDeleteBtn(toDoContainer, handleDeleteToDo);
+  doOnSaveBtn(toDoContainer, todo, handleEditToDo);
 
   return toDoContainer;
 }
