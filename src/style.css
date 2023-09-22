@@ -35,10 +35,12 @@ body {
   gap: 1rem;
 }
 
-#anytime,
-#trash-project {
-  padding-bottom: 0.3rem;
+#completed-project {
+  width: 100%;
+  padding: 0.3rem 0;
+  border-top: 0.15rem solid #000;
   border-bottom: 0.15rem solid #000;
+  text-align: left;
 }
 
 .todos-project {
@@ -163,7 +165,7 @@ body {
 }
 
 .project-selection {
-  padding: 0.3rem 1.5rem;
+  padding: 0.3rem 1rem;
 }
 
 .add-project-to-todo-btn {
@@ -182,7 +184,6 @@ body {
   border: 1px black solid;
 }
 .delete-project-in-project-selection-btn {
-  margin-left: 1rem;
   padding: 0.5rem 1rem;
   background-color: transparent;
   border: 1px solid transparent;
@@ -196,7 +197,7 @@ body {
   padding: 0.5rem 1.5rem;
   padding-right: 0.5rem;
   display: flex;
-  gap: 1rem;
+  align-items: center;
   border-radius: 2rem;
   background-color: aquamarine;
 }

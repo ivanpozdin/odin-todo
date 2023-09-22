@@ -8,16 +8,17 @@ const createProjectsContainer = function () {
   return projectSelectionContainer;
 };
 
-const createNewProjectContainerElement = function () {
+const createEmptyProjectContainerElement = function () {
   const newProjectContainerElement = document.createElement("div");
   newProjectContainerElement.classList.add("one-project-selection-container");
   return newProjectContainerElement;
 };
 
-const createNewProjectSelectionElement = function () {
+const createNewProjectSelectionElement = function (projectName = "") {
   const newProjectSelectionElement = document.createElement("div");
   newProjectSelectionElement.classList.add("project-selection");
   newProjectSelectionElement.setAttribute("contenteditable", "true");
+  newProjectSelectionElement.textContent = projectName;
   return newProjectSelectionElement;
 };
 
@@ -52,25 +53,29 @@ const handleDeletingProject = function (deleteProjectBtn, projectContainer) {
   });
 };
 
-const handleAddingNewProjects = function (projectsContainer) {
+const createFullProjectContainer = function (projectName = "") {
+  const projectContainer = createEmptyProjectContainerElement();
+  const inputProjectElement = createNewProjectSelectionElement(projectName);
+  const deleteProjectBtn = createDeleteButtonForProject();
+
+  handleDeletingProject(deleteProjectBtn, projectContainer);
+  removeProjectWhenEmptyOnBlur(projectContainer, inputProjectElement);
+
+  projectContainer.insertAdjacentElement("beforeend", inputProjectElement);
+  projectContainer.insertAdjacentElement("beforeend", deleteProjectBtn);
+  return projectContainer;
+};
+
+const handleAddingNewProjects = function (projectsContainer, projects = []) {
   const addProjectBtn = projectsContainer.querySelector(
     ".add-project-to-todo-btn"
   );
   addProjectBtn.addEventListener("click", () => {
     if (isLastProjectEmpty(addProjectBtn)) return;
 
-    const projectContainer = createNewProjectContainerElement();
-    const inputProjectElement = createNewProjectSelectionElement();
-    const deleteProjectBtn = createDeleteButtonForProject();
-
-    handleDeletingProject(deleteProjectBtn, projectContainer);
-    removeProjectWhenEmptyOnBlur(projectContainer, inputProjectElement);
-
-    projectContainer.insertAdjacentElement("beforeend", inputProjectElement);
-    projectContainer.insertAdjacentElement("beforeend", deleteProjectBtn);
+    const projectContainer = createFullProjectContainer();
     addProjectBtn.insertAdjacentElement("beforebegin", projectContainer);
-
-    inputProjectElement.focus();
+    projectContainer.querySelector(".project-selection").focus();
   });
 };
 
@@ -91,6 +96,22 @@ const generateToDoTitleDescriptionAndControlsHtml = function (todo) {
   </div>
 `;
   return toDoHtml;
+};
+
+const insertProjectsToProjectContainer = function (
+  projectsContainer,
+  projects
+) {
+  if (!projects) return;
+  const addProjectBtn = projectsContainer.querySelector(
+    ".add-project-to-todo-btn"
+  );
+  projects.forEach((project) =>
+    addProjectBtn.insertAdjacentElement(
+      "beforebegin",
+      createFullProjectContainer(project)
+    )
+  );
 };
 
 export default function generateToDoElement(
@@ -124,7 +145,9 @@ export default function generateToDoElement(
 
   toDoContainer.querySelector(".projects-btn").addEventListener("click", () => {
     const projectsContainer = createProjectsContainer();
+
     toDoContainer.insertAdjacentElement("beforeend", projectsContainer);
+    insertProjectsToProjectContainer(projectsContainer, todo?.projects);
     handleAddingNewProjects(projectsContainer);
   });
   toDoContainer

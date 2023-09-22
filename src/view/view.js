@@ -11,8 +11,7 @@ export default function generateView(handleProjectClick) {
       <button class="fixed-todos-project todos-project" id="anytime">
         🗓️ anytime
       </button>
-      <button class="fixed-todos-project todos-project">✅ completed</button>
-      <button class="fixed-todos-project todos-project " id="trash-project">🗑️ trash</button>
+      <button class="fixed-todos-project todos-project" id="completed-project">✅ completed</button>
       <div class="user-projects-container">
       </div>
     </div>
@@ -30,3 +29,4 @@ export default function generateView(handleProjectClick) {
     });
   });
 }
+// <button class="fixed-todos-project todos-project " id="trash-project">🗑️ trash</button>
