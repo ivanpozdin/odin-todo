@@ -189,7 +189,9 @@ const createToDoContainer = function (todo) {
     generateToDoTitleDescriptionAndControlsHtml(todo);
   toDoContainer.insertAdjacentHTML("afterbegin", titleDescriptionControlsHtml);
   if (todo?.date) {
-    toDoContainer.querySelector('input[type="date"]').valueAsDate = todo.date;
+    toDoContainer.querySelector('input[type="date"]').valueAsDate = new Date(
+      todo.date
+    );
   }
   return toDoContainer;
 };

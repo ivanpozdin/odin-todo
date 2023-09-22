@@ -1,4 +1,4 @@
-import ToDo from "./TODO";
+import ToDo from "./toDo.js";
 export default class State {
   #toDos = {};
   #completedToDos = {};
@@ -8,6 +8,7 @@ export default class State {
   constructor(fixedProjects) {
     fixedProjects.forEach((project) => (this.#projects[project] = []));
     this.#fixedProjects = fixedProjects;
+    this.#getLocalStorage();
   }
 
   set fixedProjects(projectsNames) {
@@ -26,7 +27,7 @@ export default class State {
     const projectWithCurrent = [
       ...new Set(projects.concat(this.#currentProject)),
     ];
-    const toDo = new ToDo(title, description, projectWithCurrent, date);
+    const toDo = ToDo(title, description, projectWithCurrent, date);
     this.#toDos[toDo.id] = toDo;
     projectWithCurrent.forEach((project) => {
       if (this.#projects[project]) {
@@ -35,6 +36,8 @@ export default class State {
         this.#projects[project] = [toDo];
       }
     });
+    this.#setLocalStorage();
+
     return toDo.id;
   }
 
@@ -43,6 +46,7 @@ export default class State {
       return;
     }
     this.#projects[projectName] = [];
+    this.#setLocalStorage();
   }
 
   removeToDo(toDoId) {
@@ -53,6 +57,7 @@ export default class State {
       this.#projects[project].splice(deleteIndex, 1);
     });
     delete this.#toDos[toDoId];
+    this.#setLocalStorage();
   }
 
   completeToDo(toDoId) {
@@ -64,13 +69,6 @@ export default class State {
     if (!project) return this.#projects[this.#currentProject];
     this.#currentProject = project.trim();
     return this.#projects[this.#currentProject];
-  }
-
-  #updateToDo(toDoId, title, description, projects, date) {
-    this.#toDos[toDoId].title = title;
-    this.#toDos[toDoId].description = description;
-    this.#toDos[toDoId].projects = projects;
-    this.#toDos[toDoId].date = date;
   }
 
   editToDo(toDoId, title, description, newProjects, date) {
@@ -86,6 +84,14 @@ export default class State {
     this.#updateToDo(toDoId, title, description, newProjects, date);
     this.#saveNewProjects(oldProjects, newProjects, toDoId);
     this.#deleteToDoFromExcludedProjects(removedProjects, toDoId);
+    this.#setLocalStorage();
+  }
+
+  #updateToDo(toDoId, title, description, projects, date) {
+    this.#toDos[toDoId].title = title;
+    this.#toDos[toDoId].description = description;
+    this.#toDos[toDoId].projects = projects;
+    this.#toDos[toDoId].date = date;
   }
 
   #deleteToDoFromExcludedProjects(removedProjects, toDoId) {
@@ -153,6 +159,32 @@ export default class State {
     if (str.length !== 1) return false;
     const withEmojis = /\p{Extended_Pictographic}/u;
     return withEmojis.test(str);
+  }
+
+  #setLocalStorage() {
+    console.log(JSON.stringify(this.#projects), this.#projects);
+    localStorage.setItem("todos", JSON.stringify(this.#toDos));
+    localStorage.setItem("projects", JSON.stringify(this.#projects));
+    localStorage.setItem(
+      "completed_todos",
+      JSON.stringify(this.#completedToDos)
+    );
+  }
+
+  #getLocalStorage() {
+    const todos = JSON.parse(localStorage.getItem("todos"));
+    const projects = JSON.parse(localStorage.getItem("projects"));
+    const completedToDos = JSON.parse(localStorage.getItem("completed_todos"));
+    if (todos) {
+      this.#toDos = todos;
+    }
+    if (projects) {
+      this.#projects = projects;
+    }
+
+    if (completedToDos) {
+      this.#completedToDos = completedToDos;
+    }
   }
 
   get userProjectNames() {

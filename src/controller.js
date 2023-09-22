@@ -24,8 +24,6 @@ const handleAddNewProject = function (projectName) {
 };
 
 const handleEditToDo = function (toDoId, title, description, projects, date) {
-  console.log("edit from controller");
-  console.log(toDoId, title, description, projects, date);
   state.editToDo(toDoId, title, description, projects, date);
   generateAllToDosInProject(
     state.currentProject,
@@ -44,6 +42,13 @@ const init = function () {
   generateView(handleProjectClick);
   handleGeneratingNewToDo(handleDeleteToDo, handleEditToDo);
   handleGeneratingNewProject(handleAddNewProject);
+
   generateProjectsView(state.userProjectNames, handleProjectClick);
+  generateAllToDosInProject(
+    state.currentProject,
+    state.getAllToDosInProject(),
+    handleDeleteToDo,
+    handleEditToDo
+  );
 };
 init();
