@@ -47,33 +47,40 @@ const isLastProjectEmpty = function (addProjectBtn) {
   );
 };
 
-const handleDeletingProject = function (deleteProjectBtn, projectContainer) {
+const handleDeletingProject = function (
+  deleteProjectBtn,
+  projectContainer,
+  save
+) {
   deleteProjectBtn.addEventListener("click", () => {
     projectContainer.remove();
+    save();
   });
 };
 
-const createFullProjectContainer = function (projectName = "") {
+const createFullProjectContainer = function (projectName = "", save) {
   const projectContainer = createEmptyProjectContainerElement();
   const inputProjectElement = createNewProjectSelectionElement(projectName);
   const deleteProjectBtn = createDeleteButtonForProject();
 
-  handleDeletingProject(deleteProjectBtn, projectContainer);
+  handleDeletingProject(deleteProjectBtn, projectContainer, save);
   removeProjectWhenEmptyOnBlur(projectContainer, inputProjectElement);
-
+  inputProjectElement.addEventListener("blur", () => {
+    save();
+  });
   projectContainer.insertAdjacentElement("beforeend", inputProjectElement);
   projectContainer.insertAdjacentElement("beforeend", deleteProjectBtn);
   return projectContainer;
 };
 
-const handleAddingNewProjectToUI = function (projectsContainer, projects = []) {
+const handleAddingNewProjectToUI = function (projectsContainer, save) {
   const addProjectBtn = projectsContainer.querySelector(
     ".add-project-to-todo-btn"
   );
   addProjectBtn.addEventListener("click", () => {
     if (isLastProjectEmpty(addProjectBtn)) return;
 
-    const projectContainer = createFullProjectContainer();
+    const projectContainer = createFullProjectContainer("", save);
     addProjectBtn.insertAdjacentElement("beforebegin", projectContainer);
     projectContainer.querySelector(".project-selection").focus();
   });
@@ -100,7 +107,8 @@ const generateToDoTitleDescriptionAndControlsHtml = function (todo) {
 
 const insertProjectsToProjectContainer = function (
   projectsContainer,
-  projects
+  projects,
+  save
 ) {
   if (!projects) return;
   const addProjectBtn = projectsContainer.querySelector(
@@ -109,7 +117,7 @@ const insertProjectsToProjectContainer = function (
   projects.forEach((project) =>
     addProjectBtn.insertAdjacentElement(
       "beforebegin",
-      createFullProjectContainer(project)
+      createFullProjectContainer(project, save)
     )
   );
 };
@@ -134,15 +142,27 @@ const getDate = function (toDoElement) {
   if (dateControl.value) date = new Date(dateControl.valueAsNumber);
   return date;
 };
+const saveOnBlur = function (toDoContainer, todo, handleEditToDo) {
+  const [titleElement, descriptionElement] = [
+    toDoContainer.querySelector(".title-todo"),
+    toDoContainer.querySelector(".description-todo"),
+  ];
+  const projects = getProjects(todo?.projects ?? [], toDoContainer);
+  const dateControl = toDoContainer.querySelector('input[type="date"]');
 
-const doOnSaveBtn = function (toDoContainer, todo, handleEditToDo) {
-  const saveToDoBtn = toDoContainer.querySelector(".save-to-do-btn");
-  saveToDoBtn.addEventListener("click", function () {
-    const [titleElement, descriptionElement] = [
-      toDoContainer.querySelector(".title-todo"),
-      toDoContainer.querySelector(".description-todo"),
-    ];
-    const projects = getProjects(todo?.projects ?? [], toDoContainer);
+  [titleElement, descriptionElement].forEach((element) =>
+    element.addEventListener("blur", () => {
+      const date = getDate(toDoContainer);
+      handleEditToDo(
+        toDoContainer.dataset.id,
+        titleElement.textContent,
+        descriptionElement.textContent,
+        projects,
+        date
+      );
+    })
+  );
+  dateControl.addEventListener("change", () => {
     const date = getDate(toDoContainer);
     handleEditToDo(
       toDoContainer.dataset.id,
@@ -152,6 +172,28 @@ const doOnSaveBtn = function (toDoContainer, todo, handleEditToDo) {
       date
     );
   });
+};
+const doOnSaveBtn = function (toDoContainer, todo, handleEditToDo) {
+  const saveToDoBtn = toDoContainer.querySelector(".save-to-do-btn");
+  saveToDoBtn.addEventListener("click", () => {
+    saveToDo(toDoContainer, todo, handleEditToDo);
+  });
+};
+
+const saveToDo = function (toDoContainer, todo, handleEditToDo) {
+  const [titleElement, descriptionElement] = [
+    toDoContainer.querySelector(".title-todo"),
+    toDoContainer.querySelector(".description-todo"),
+  ];
+  const projects = getProjects(todo?.projects ?? [], toDoContainer);
+  const date = getDate(toDoContainer);
+  handleEditToDo(
+    toDoContainer.dataset.id,
+    titleElement.textContent,
+    descriptionElement.textContent,
+    projects,
+    date
+  );
 };
 
 const doOnDeleteBtn = function (toDoContainer, handleDeleteToDo) {
@@ -163,7 +205,7 @@ const doOnDeleteBtn = function (toDoContainer, handleDeleteToDo) {
     });
 };
 
-const doOnShowProjects = function (toDoContainer, toDoProjects) {
+const doOnShowProjects = function (toDoContainer, toDoProjects, save) {
   toDoContainer.querySelector(".projects-btn").addEventListener("click", () => {
     const existingProjectsContainer = toDoContainer.querySelector(
       ".project-selection-container"
@@ -175,8 +217,8 @@ const doOnShowProjects = function (toDoContainer, toDoProjects) {
     const projectsContainer = createProjectsContainer();
 
     toDoContainer.insertAdjacentElement("beforeend", projectsContainer);
-    insertProjectsToProjectContainer(projectsContainer, toDoProjects);
-    handleAddingNewProjectToUI(projectsContainer);
+    insertProjectsToProjectContainer(projectsContainer, toDoProjects, save);
+    handleAddingNewProjectToUI(projectsContainer, save);
   });
 };
 
@@ -201,9 +243,13 @@ export default function generateToDoElement(
   handleEditToDo
 ) {
   const toDoContainer = createToDoContainer(todo);
-  doOnShowProjects(toDoContainer, todo?.projects ?? []);
+  doOnShowProjects(
+    toDoContainer,
+    todo?.projects ?? [],
+    saveToDo.bind(null, toDoContainer, todo, handleEditToDo)
+  );
   doOnDeleteBtn(toDoContainer, handleDeleteToDo);
   doOnSaveBtn(toDoContainer, todo, handleEditToDo);
-
+  saveOnBlur(toDoContainer, todo, handleEditToDo);
   return toDoContainer;
 }

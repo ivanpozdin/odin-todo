@@ -46,6 +46,7 @@ body {
 .todos-project {
   border: none;
   background-color: transparent;
+  font-size: 1.5rem;
 }
 
 .todos-project:hover {
@@ -191,13 +192,11 @@ body {
   border-radius: 50%;
 }
 .delete-project-in-project-selection-btn:hover {
-  /* border: 1px solid #000; */
   background-color: #aaaaaa4f;
 }
 
 .one-project-selection-container {
   padding: 0 0.5rem;
-  /* padding-right: 0.3rem; */
   display: flex;
   align-items: center;
   border-radius: 2rem;
@@ -206,6 +205,7 @@ body {
 
 .project-selection:read-write:focus,
 .title-todo:read-write:focus,
-.description-todo:read-write:focus {
+.description-todo:read-write:focus,
+div.todos-project {
   outline: none;
 }

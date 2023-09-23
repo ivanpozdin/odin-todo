@@ -25,12 +25,14 @@ const handleAddNewProject = function (projectName) {
 
 const handleEditToDo = function (toDoId, title, description, projects, date) {
   state.editToDo(toDoId, title, description, projects, date);
-  generateAllToDosInProject(
-    state.currentProject,
-    state.getAllToDosInProject(),
-    handleDeleteToDo,
-    handleEditToDo
-  );
+  if (!projects.includes(state.currentProject)) {
+    generateAllToDosInProject(
+      state.currentProject,
+      state.getAllToDosInProject(),
+      handleDeleteToDo,
+      handleEditToDo
+    );
+  }
   generateProjectsView(state.userProjectNames, handleProjectClick);
 };
 
