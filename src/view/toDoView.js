@@ -165,7 +165,6 @@ const doOnDeleteBtn = function (toDoContainer, handleDeleteToDo) {
 
 const doOnShowProjects = function (toDoContainer, toDoProjects) {
   toDoContainer.querySelector(".projects-btn").addEventListener("click", () => {
-    console.log("hi!");
     const existingProjectsContainer = toDoContainer.querySelector(
       ".project-selection-container"
     );

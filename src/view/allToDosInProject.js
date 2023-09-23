@@ -5,6 +5,7 @@ export default function generateAllToDosInProject(
   handleDeleteToDo,
   handleEditToDo = () => {}
 ) {
+  console.log("AllToDosInProject", todos);
   document.querySelector(".project-title").textContent = projectName;
   const toDoListElement = document.querySelector(".todo-list");
   toDoListElement.innerHTML = "";
