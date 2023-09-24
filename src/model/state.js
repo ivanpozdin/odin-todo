@@ -69,6 +69,7 @@ export default class State {
 
   getAllToDosInProject(project = "") {
     this.#currentProject = project.trim() || this.#currentProject;
+    this.#setLocalStorage();
     const projectToDos = this.#projects[this.#currentProject].map(
       (toDoId) => this.#toDos[toDoId]
     );
@@ -163,12 +164,17 @@ export default class State {
       "completed_todos",
       JSON.stringify(this.#completedToDos)
     );
+    localStorage.setItem(
+      "current_project",
+      JSON.stringify(this.#currentProject)
+    );
   }
 
   #getLocalStorage() {
     const todos = JSON.parse(localStorage.getItem("todos"));
     const projects = JSON.parse(localStorage.getItem("projects"));
     const completedToDos = JSON.parse(localStorage.getItem("completed_todos"));
+    const currentProject = JSON.parse(localStorage.getItem("current_project"));
     if (todos) {
       this.#toDos = todos;
     }
@@ -178,6 +184,10 @@ export default class State {
 
     if (completedToDos) {
       this.#completedToDos = completedToDos;
+    }
+    if (currentProject) {
+      this.#currentProject = currentProject;
+      console.log(currentProject);
     }
   }
 
