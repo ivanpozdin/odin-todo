@@ -95,7 +95,6 @@ const generateToDoTitleDescriptionAndControlsHtml = function (todo) {
   <div class="description-todo" contenteditable="true" data-placeholder="description...">${
     todo ? todo.description : ""
   }</div>
-  <button class="save-to-do-btn">💾</button>
   <div class="todo-controls-container">
     <input type="date" value="" />
     <button class="projects-btn todo-controls">🏷️</button>
@@ -155,12 +154,6 @@ const saveOnBlur = function (toDoContainer, todo, handleEditToDo) {
   );
   const dateControl = toDoContainer.querySelector('input[type="date"]');
   dateControl.addEventListener("change", () => {
-    saveToDo(toDoContainer, todo, handleEditToDo);
-  });
-};
-const doOnSaveBtn = function (toDoContainer, todo, handleEditToDo) {
-  const saveToDoBtn = toDoContainer.querySelector(".save-to-do-btn");
-  saveToDoBtn.addEventListener("click", () => {
     saveToDo(toDoContainer, todo, handleEditToDo);
   });
 };
@@ -240,7 +233,6 @@ export default function generateToDoElement(
     saveToDo.bind(null, toDoContainer, todo, handleEditToDo)
   );
   doOnDeleteBtn(toDoContainer, handleDeleteToDo);
-  doOnSaveBtn(toDoContainer, todo, handleEditToDo);
   saveOnBlur(toDoContainer, todo, handleEditToDo);
   return toDoContainer;
 }
