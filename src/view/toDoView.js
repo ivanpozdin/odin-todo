@@ -142,35 +142,20 @@ const getDate = function (toDoElement) {
   if (dateControl.value) date = new Date(dateControl.valueAsNumber);
   return date;
 };
+
 const saveOnBlur = function (toDoContainer, todo, handleEditToDo) {
   const [titleElement, descriptionElement] = [
     toDoContainer.querySelector(".title-todo"),
     toDoContainer.querySelector(".description-todo"),
   ];
-  const projects = getProjects(todo?.projects ?? [], toDoContainer);
-  const dateControl = toDoContainer.querySelector('input[type="date"]');
-
   [titleElement, descriptionElement].forEach((element) =>
     element.addEventListener("blur", () => {
-      const date = getDate(toDoContainer);
-      handleEditToDo(
-        toDoContainer.dataset.id,
-        titleElement.textContent,
-        descriptionElement.textContent,
-        projects,
-        date
-      );
+      saveToDo(toDoContainer, todo, handleEditToDo);
     })
   );
+  const dateControl = toDoContainer.querySelector('input[type="date"]');
   dateControl.addEventListener("change", () => {
-    const date = getDate(toDoContainer);
-    handleEditToDo(
-      toDoContainer.dataset.id,
-      titleElement.textContent,
-      descriptionElement.textContent,
-      projects,
-      date
-    );
+    saveToDo(toDoContainer, todo, handleEditToDo);
   });
 };
 const doOnSaveBtn = function (toDoContainer, todo, handleEditToDo) {
@@ -185,6 +170,12 @@ const saveToDo = function (toDoContainer, todo, handleEditToDo) {
     toDoContainer.querySelector(".title-todo"),
     toDoContainer.querySelector(".description-todo"),
   ];
+  if (
+    titleElement.textContent.trim() === "" &&
+    descriptionElement.textContent.trim() === ""
+  ) {
+    return;
+  }
   const projects = getProjects(todo?.projects ?? [], toDoContainer);
   const date = getDate(toDoContainer);
   handleEditToDo(
