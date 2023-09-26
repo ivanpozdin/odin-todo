@@ -14,9 +14,11 @@ export default class State {
   set fixedProjects(projectsNames) {
     this.#fixedProjects = projectsNames;
   }
+
   get currentProject() {
     return this.#currentProject;
   }
+
   set currentProject(projectName) {
     if (projectName && this.#projects.hasOwnProperty(projectName)) {
       this.#currentProject = projectName;
@@ -24,24 +26,28 @@ export default class State {
   }
 
   addToDo(title, description, projects, date = null) {
+    if (this.#currentProject === "✅ completed") return;
     const projectWithCurrent = [
-      ...new Set(projects.concat(this.#currentProject)),
+      ...new Set(projects.concat([this.currentProject])),
     ];
     const toDo = ToDo(title, description, projectWithCurrent, date);
     this.#toDos[toDo.id] = toDo;
     projectWithCurrent.forEach((project) => {
-      if (this.#projects[project]) {
+      if (project in this.#projects) {
         this.#projects[project].unshift(toDo.id);
       } else {
         this.#projects[project] = [toDo.id];
       }
     });
     this.#setLocalStorage();
-
+    console.log(this.#projects["my"]);
     return toDo.id;
   }
 
   addProject(projectName) {
+    if (this.#currentProject === "✅ completed") {
+      return;
+    }
     if (projectName in this.#projects) {
       return;
     }
@@ -49,34 +55,51 @@ export default class State {
     this.#setLocalStorage();
   }
 
-  removeToDo(toDoId) {
-    if (!(toDoId in this.#toDos)) return;
+  #removeToDoFromCompleted(toDoId) {
+    if (!(toDoId in this.#completedToDos)) return;
+    const toDoToDelete = this.#completedToDos[toDoId];
+    delete this.#completedToDos[toDoId];
+    this.#setLocalStorage();
+    return toDoToDelete;
+  }
 
+  #removeToDoFromActiveToDos(toDoId) {
+    if (!(toDoId in this.#toDos)) return;
     this.#toDos[toDoId].projects.forEach((project) => {
       const deleteIndex = this.#projects[project].findIndex(
         (curToDoId) => curToDoId === toDoId
       );
       this.#projects[project].splice(deleteIndex, 1);
     });
+    const toDoToDelete = this.#toDos[toDoId];
     delete this.#toDos[toDoId];
     this.#setLocalStorage();
+    return toDoToDelete;
   }
 
-  completeToDo(toDoId) {
-    this.#completedToDos[toDoId] = this.#toDos[toDoId];
-    this.removeToDo(toDoId);
+  removeToDo(toDoId) {
+    if (this.#currentProject === "✅ completed") {
+      return this.#removeToDoFromCompleted(toDoId);
+    }
+    return this.#removeToDoFromActiveToDos(toDoId);
   }
 
   getAllToDosInProject(project = "") {
     this.#currentProject = project.trim() || this.#currentProject;
     this.#setLocalStorage();
-    const projectToDos = this.#projects[this.#currentProject].map(
-      (toDoId) => this.#toDos[toDoId]
-    );
-    return projectToDos;
+    if (this.#currentProject === "✅ completed") {
+      return Object.values(this.#completedToDos);
+    } else {
+      return this.#projects[this.#currentProject].map(
+        (toDoId) => this.#toDos[toDoId]
+      );
+    }
   }
 
   editToDo(toDoId, title, description, newProjects, date) {
+    if (this.#currentProject === "✅ completed") {
+      return;
+    }
     if (!(toDoId in this.#toDos)) {
       this.addToDo(title, description, newProjects, date);
       return;
@@ -89,6 +112,40 @@ export default class State {
     this.#saveNewProjects(oldProjects, newProjects, toDoId);
     this.#deleteToDoFromExcludedProjects(removedProjects, toDoId);
     this.#setLocalStorage();
+  }
+
+  #restoreToDoFromCompleted(toDoId) {
+    if (!(toDoId in this.#completedToDos)) {
+      return;
+    }
+    const toDo = this.#completedToDos[toDoId];
+    delete this.#completedToDos[toDoId];
+
+    this.#toDos[toDo.id] = toDo;
+    toDo.projects.forEach((project) => {
+      if (project in this.#projects) {
+        this.#projects[project].unshift(toDo.id);
+      } else {
+        this.#projects[project] = [toDo.id];
+      }
+    });
+    this.#setLocalStorage();
+  }
+
+  #putToDoToCompleted(toDoId) {
+    if (toDoId in this.#completedToDos) {
+      return;
+    }
+    const toDoToComplete = this.removeToDo(toDoId);
+    this.#completedToDos[toDoId] = toDoToComplete;
+  }
+
+  completeToDo(toDoId) {
+    if (toDoId in this.#completedToDos) {
+      this.#restoreToDoFromCompleted(toDoId);
+    } else {
+      this.#putToDoToCompleted(toDoId);
+    }
   }
 
   #updateToDo(toDoId, title, description, projects, date) {
@@ -115,46 +172,6 @@ export default class State {
         this.#projects[project] = [toDoId];
       }
     });
-  }
-
-  moveToDoPriorityInProjectUp(toDoId, project) {
-    if (!this.#toDos[toDoId]) {
-      return;
-    }
-    const indexOfToDo = this.#projects[project].findIndex(
-      (toDo) => toDo.id === toDoId
-    );
-
-    if (!indexOfToDo ?? indexOfToDo === 0) {
-      return;
-    }
-    [
-      this.#projects[project][indexOfToDo - 1],
-      this.#projects[project][indexOfToDo],
-    ] = [
-      this.#projects[project][indexOfToDo],
-      this.#projects[project][indexOfToDo - 1],
-    ];
-  }
-
-  moveToDoPriorityInProjectDown(toDoId, project) {
-    if (!this.#toDos[toDoId]) {
-      return;
-    }
-    const indexOfToDo = this.#projects[project].findIndex(
-      (toDo) => toDo.id === toDoId
-    );
-    if (!indexOfToDo || indexOfToDo === this.#projects[project].length - 1) {
-      return;
-    }
-
-    [
-      this.#projects[project][indexOfToDo + 1],
-      this.#projects[project][indexOfToDo],
-    ] = [
-      this.#projects[project][indexOfToDo],
-      this.#projects[project][indexOfToDo + 1],
-    ];
   }
 
   #setLocalStorage() {
@@ -195,5 +212,45 @@ export default class State {
     return Object.keys(this.#projects).filter((name) =>
       this.#fixedProjects.every((project) => project !== name)
     );
+  }
+
+  moveToDoPriorityInProjectUp(toDoId, project) {
+    if (!this.#toDos[toDoId]) {
+      return;
+    }
+    const indexOfToDo = this.#projects[project].findIndex(
+      (toDo) => toDo.id === toDoId
+    );
+
+    if (!indexOfToDo ?? indexOfToDo === 0) {
+      return;
+    }
+    [
+      this.#projects[project][indexOfToDo - 1],
+      this.#projects[project][indexOfToDo],
+    ] = [
+      this.#projects[project][indexOfToDo],
+      this.#projects[project][indexOfToDo - 1],
+    ];
+  }
+
+  moveToDoPriorityInProjectDown(toDoId, project) {
+    if (!this.#toDos[toDoId]) {
+      return;
+    }
+    const indexOfToDo = this.#projects[project].findIndex(
+      (toDo) => toDo.id === toDoId
+    );
+    if (!indexOfToDo || indexOfToDo === this.#projects[project].length - 1) {
+      return;
+    }
+
+    [
+      this.#projects[project][indexOfToDo + 1],
+      this.#projects[project][indexOfToDo],
+    ] = [
+      this.#projects[project][indexOfToDo],
+      this.#projects[project][indexOfToDo + 1],
+    ];
   }
 }

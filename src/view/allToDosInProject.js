@@ -3,7 +3,9 @@ export default function generateAllToDosInProject(
   projectName,
   todos,
   handleDeleteToDo,
-  handleEditToDo = () => {}
+  handleEditToDo,
+  handleCompleteToDo,
+  isCompleted = false
 ) {
   document.querySelector(".project-title").textContent = projectName;
   const toDoListElement = document.querySelector(".todo-list");
@@ -13,7 +15,9 @@ export default function generateAllToDosInProject(
     const toDoElement = generateToDoElement(
       todo,
       handleDeleteToDo,
-      handleEditToDo
+      handleEditToDo,
+      handleCompleteToDo,
+      isCompleted
     );
     toDoListElement.insertAdjacentElement("beforeend", toDoElement);
   });

@@ -29,4 +29,3 @@ export default function generateView(handleProjectClick) {
     });
   });
 }
-// <button class="fixed-todos-project todos-project " id="trash-project">🗑️ trash</button>

@@ -14,10 +14,23 @@ const handleProjectClick = function (projectName) {
     projectName,
     state.getAllToDosInProject(projectName),
     handleDeleteToDo,
-    handleEditToDo
+    handleEditToDo,
+    handleCompleteToDo,
+    projectName === "✅ completed"
   );
 };
 
+const handleCompleteToDo = function (id) {
+  state.completeToDo(id);
+  generateAllToDosInProject(
+    state.currentProject,
+    state.getAllToDosInProject(),
+    handleDeleteToDo,
+    handleEditToDo,
+    handleCompleteToDo,
+    state.currentProject === "✅ completed"
+  );
+};
 const handleAddNewProject = function (projectName) {
   state.addProject(projectName);
   generateProjectsView(state.userProjectNames, handleProjectClick);
@@ -30,7 +43,8 @@ const handleEditToDo = function (toDoId, title, description, projects, date) {
       state.currentProject,
       state.getAllToDosInProject(),
       handleDeleteToDo,
-      handleEditToDo
+      handleEditToDo,
+      handleCompleteToDo
     );
   }
   generateProjectsView(state.userProjectNames, handleProjectClick);
@@ -42,15 +56,15 @@ const handleDeleteToDo = function (id) {
 
 const init = function () {
   generateView(handleProjectClick);
-  handleGeneratingNewToDo(handleDeleteToDo, handleEditToDo);
+  handleGeneratingNewToDo(handleDeleteToDo, handleEditToDo, handleCompleteToDo);
   handleGeneratingNewProject(handleAddNewProject);
-
   generateProjectsView(state.userProjectNames, handleProjectClick);
   generateAllToDosInProject(
     state.currentProject,
     state.getAllToDosInProject(),
     handleDeleteToDo,
-    handleEditToDo
+    handleEditToDo,
+    handleCompleteToDo
   );
 };
 init();

@@ -86,9 +86,14 @@ const handleAddingNewProjectToUI = function (projectsContainer, save) {
   });
 };
 
-const generateToDoTitleDescriptionAndControlsHtml = function (todo) {
+const generateToDoTitleDescriptionAndControlsHtml = function (
+  todo,
+  isCompleted
+) {
   const toDoHtml = `
-  <input type="checkbox" class="complete-todo-btn" />
+  <input type="checkbox" ${
+    isCompleted ? "checked" : ""
+  } class="complete-todo-checkbox" />
   <h3 class="title-todo" contenteditable="true" data-placeholder="title">${
     todo ? todo.title : ""
   }</h3>
@@ -206,12 +211,12 @@ const doOnShowProjects = function (toDoContainer, toDoProjects, save) {
   });
 };
 
-const createToDoContainer = function (todo) {
+const createToDoContainer = function (todo, isCompleted) {
   const toDoContainer = document.createElement("li");
   toDoContainer.classList.add("todo");
   toDoContainer.dataset.id = todo?.id ?? "";
   const titleDescriptionControlsHtml =
-    generateToDoTitleDescriptionAndControlsHtml(todo);
+    generateToDoTitleDescriptionAndControlsHtml(todo, isCompleted);
   toDoContainer.insertAdjacentHTML("afterbegin", titleDescriptionControlsHtml);
   if (todo?.date) {
     toDoContainer.querySelector('input[type="date"]').valueAsDate = new Date(
@@ -221,18 +226,33 @@ const createToDoContainer = function (todo) {
   return toDoContainer;
 };
 
+const doOnCompleteToDo = function (toDoContainer, id, handleCompleteToDo) {
+  const checkbox = toDoContainer.querySelector(".complete-todo-checkbox");
+  checkbox.addEventListener("click", () => {
+    if (!id) {
+      toDoContainer.remove();
+      return;
+    }
+    handleCompleteToDo(id);
+  });
+};
+
 export default function generateToDoElement(
   todo = null,
   handleDeleteToDo,
-  handleEditToDo
+  handleEditToDo,
+  handleCompleteToDo,
+  isCompleted = false
 ) {
-  const toDoContainer = createToDoContainer(todo);
+  const toDoContainer = createToDoContainer(todo, isCompleted);
+  doOnCompleteToDo(toDoContainer, todo?.id, handleCompleteToDo);
+  doOnDeleteBtn(toDoContainer, handleDeleteToDo);
+  if (isCompleted) return toDoContainer;
   doOnShowProjects(
     toDoContainer,
     todo?.projects ?? [],
     saveToDo.bind(null, toDoContainer, todo, handleEditToDo)
   );
-  doOnDeleteBtn(toDoContainer, handleDeleteToDo);
   saveOnBlur(toDoContainer, todo, handleEditToDo);
   return toDoContainer;
 }
