@@ -122,6 +122,16 @@ body {
   background-color: #e5e7eb;
 }
 
+.content-header {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.delete-project-btn {
+  align-self: center;
+}
+
 .project-title {
   text-align: center;
   font-size: 3rem;

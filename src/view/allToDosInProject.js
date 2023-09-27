@@ -4,9 +4,18 @@ export default function generateAllToDosInProject(
   todos,
   handleDeleteToDo,
   handleEditToDo,
-  handleCompleteToDo,
-  isCompleted = false
+  handleCompleteToDo
 ) {
+  const deleteProjectBtn = document.querySelector(
+    ".content-header>.delete-project-btn"
+  );
+  if (
+    ["anytime", "inbox", "someday", "today", "completed"].includes(projectName)
+  ) {
+    deleteProjectBtn.classList.add("hidden");
+  } else {
+    deleteProjectBtn.classList.remove("hidden");
+  }
   document.querySelector(".project-title").textContent = projectName;
   const toDoListElement = document.querySelector(".todo-list");
   toDoListElement.innerHTML = "";
@@ -16,8 +25,7 @@ export default function generateAllToDosInProject(
       todo,
       handleDeleteToDo,
       handleEditToDo,
-      handleCompleteToDo,
-      isCompleted
+      handleCompleteToDo
     );
     toDoListElement.insertAdjacentElement("beforeend", toDoElement);
   });

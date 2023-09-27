@@ -247,9 +247,13 @@ export default function generateToDoElement(
   todo = null,
   handleDeleteToDo,
   handleEditToDo,
-  handleCompleteToDo,
-  isCompleted = false
+  handleCompleteToDo
 ) {
+  const projectTitle = document.querySelector(
+    ".content .project-title"
+  ).textContent;
+  const isCompleted = projectTitle === "completed";
+  if (isCompleted && !todo) return;
   const toDoContainer = createToDoContainer(todo, isCompleted);
   doOnCompleteToDo(toDoContainer, todo?.id, handleCompleteToDo);
   doOnDeleteBtn(toDoContainer, handleDeleteToDo);

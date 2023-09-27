@@ -216,8 +216,25 @@ export default class State {
     }
     if (currentProject) {
       this.#currentProject = currentProject;
-      console.log(currentProject);
     }
+  }
+
+  deleteProject(projectToDeleteName) {
+    if (!(projectToDeleteName in this.#projects)) return;
+    if (projectToDeleteName in this.#fixedProjects) return;
+    Object.values(this.#toDos).forEach((toDo) => {
+      toDo.projects = toDo.projects.filter(
+        (project) => project !== projectToDeleteName
+      );
+    });
+
+    Object.values(this.#completedToDos).forEach((toDo) => {
+      toDo.projects = toDo.projects.filter(
+        (project) => project !== projectToDeleteName
+      );
+    });
+    delete this.#projects[projectToDeleteName];
+    this.#currentProject = "inbox";
   }
 
   get userProjectNames() {

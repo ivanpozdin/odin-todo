@@ -8,6 +8,7 @@ const generateNewProjectElement = function () {
 export default function handleGeneratingNewProject(handler) {
   const addProjectBtn = document.getElementById("add-project-btn");
   addProjectBtn.addEventListener("click", function () {
+    console.log("aaaaaaa");
     const projectContainer = document.querySelector(".user-projects-container");
     const newProjectElement = generateNewProjectElement();
     projectContainer.insertAdjacentElement("afterbegin", newProjectElement);

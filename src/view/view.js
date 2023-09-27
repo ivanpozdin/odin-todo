@@ -1,4 +1,7 @@
-export default function generateView(handleProjectClick) {
+export default function generateView(
+  handleProjectClick,
+  handleDeleteProjectOnClick
+) {
   const viewHtml = `
   <div class="sidebar">
       <div class="projects-controls">
@@ -24,7 +27,10 @@ export default function generateView(handleProjectClick) {
       </div>
     </div>
     <div class="content">
-      <h2 class="project-title">inbox</h2>
+      <div class="content-header">
+        <button class="delete-project-btn">🗑️</button>
+        <h2 class="project-title">inbox</h2>
+      </div>
       <ul class="todo-list">
       </ul>
     </div>
@@ -37,5 +43,14 @@ export default function generateView(handleProjectClick) {
         project.querySelector(".todo-project-title").textContent
       );
     });
+  });
+  const deleteProjectBtn = document.querySelector(
+    ".content-header>.delete-project-btn"
+  );
+  deleteProjectBtn.addEventListener("click", () => {
+    const projectTitle = document.querySelector(
+      ".content-header>.project-title"
+    ).textContent;
+    handleDeleteProjectOnClick(projectTitle);
   });
 }

@@ -10,14 +10,26 @@ const fixedProjects = ["inbox", "today", "someday", "anytime"];
 const state = new State(fixedProjects);
 
 const handleProjectClick = function (projectName) {
+  console.log("hi!");
   generateAllToDosInProject(
     projectName,
     state.getAllToDosInProject(projectName),
     handleDeleteToDo,
     handleEditToDo,
-    handleCompleteToDo,
-    projectName === "completed"
+    handleCompleteToDo
   );
+};
+
+const handleDeleteProject = function (projectName) {
+  state.deleteProject(projectName);
+  generateAllToDosInProject(
+    state.currentProject,
+    state.getAllToDosInProject(),
+    handleDeleteToDo,
+    handleEditToDo,
+    handleCompleteToDo
+  );
+  generateProjectsView(state.userProjectNames, handleProjectClick);
 };
 
 const handleCompleteToDo = function (id) {
@@ -27,8 +39,7 @@ const handleCompleteToDo = function (id) {
     state.getAllToDosInProject(),
     handleDeleteToDo,
     handleEditToDo,
-    handleCompleteToDo,
-    state.currentProject === "completed"
+    handleCompleteToDo
   );
 };
 const handleAddNewProject = function (projectName) {
@@ -56,7 +67,7 @@ const handleDeleteToDo = function (id) {
 };
 
 const init = function () {
-  generateView(handleProjectClick);
+  generateView(handleProjectClick, handleDeleteProject);
   handleGeneratingNewToDo(handleDeleteToDo, handleEditToDo, handleCompleteToDo);
   handleGeneratingNewProject(handleAddNewProject);
   generateProjectsView(state.userProjectNames, handleProjectClick);

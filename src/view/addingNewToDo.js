@@ -14,6 +14,7 @@ export default function handleGeneratingNewToDo(
       handleEditToDo,
       handleCompleteToDo
     );
+    if (!toDoElement) return;
     toDoListElement.insertAdjacentElement("afterbegin", toDoElement);
     toDoElement.querySelector(".title-todo").focus();
   });
