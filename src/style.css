@@ -49,6 +49,12 @@ body {
   font-size: 1.5rem;
 }
 
+.todo-project-title {
+  border: none;
+  background-color: transparent;
+  font-size: 1.5rem;
+}
+
 .todos-project:hover {
   background-color: #e5e7eb;
 }

@@ -3,7 +3,7 @@ export default class State {
   #toDos = {};
   #completedToDos = {};
   #projects = {};
-  #currentProject = "📬 inbox";
+  #currentProject = "inbox";
   #fixedProjects;
   constructor(fixedProjects) {
     fixedProjects.forEach((project) => (this.#projects[project] = []));
@@ -26,7 +26,7 @@ export default class State {
   }
 
   addToDo(title, description, projects, date = null) {
-    if (this.#currentProject === "✅ completed") return;
+    if (this.#currentProject === "completed") return;
     const projectWithCurrent = [
       ...new Set(projects.concat([this.currentProject])),
     ];
@@ -40,17 +40,14 @@ export default class State {
       }
     });
     this.#setLocalStorage();
-    console.log(this.#projects["my"]);
     return toDo.id;
   }
 
   addProject(projectName) {
-    if (this.#currentProject === "✅ completed") {
-      return;
-    }
     if (projectName in this.#projects) {
       return;
     }
+
     this.#projects[projectName] = [];
     this.#setLocalStorage();
   }
@@ -78,7 +75,7 @@ export default class State {
   }
 
   removeToDo(toDoId) {
-    if (this.#currentProject === "✅ completed") {
+    if (this.#currentProject === "completed") {
       return this.#removeToDoFromCompleted(toDoId);
     }
     return this.#removeToDoFromActiveToDos(toDoId);
@@ -87,17 +84,20 @@ export default class State {
   getAllToDosInProject(project = "") {
     this.#currentProject = project.trim() || this.#currentProject;
     this.#setLocalStorage();
-    if (this.#currentProject === "✅ completed") {
+
+    if (this.#currentProject === "completed") {
       return Object.values(this.#completedToDos);
-    } else {
-      return this.#projects[this.#currentProject].map(
-        (toDoId) => this.#toDos[toDoId]
-      );
     }
+    if (this.#currentProject === "today") {
+      return this.todayToDos;
+    }
+    return this.#projects[this.#currentProject].map(
+      (toDoId) => this.#toDos[toDoId]
+    );
   }
 
   editToDo(toDoId, title, description, newProjects, date) {
-    if (this.#currentProject === "✅ completed") {
+    if (this.#currentProject === "completed") {
       return;
     }
     if (!(toDoId in this.#toDos)) {
@@ -212,6 +212,22 @@ export default class State {
     return Object.keys(this.#projects).filter((name) =>
       this.#fixedProjects.every((project) => project !== name)
     );
+  }
+
+  get todayToDos() {
+    const today = new Date();
+
+    const todayToDos = Object.values(this.#toDos).filter((toDo) => {
+      if (!toDo.date) return false;
+      const currentToDoDate = new Date(toDo.date);
+      return (
+        currentToDoDate.getDate() === today.getDate() &&
+        currentToDoDate.getMonth() === today.getMonth() &&
+        currentToDoDate.getFullYear() === today.getFullYear()
+      );
+    });
+    todayToDos.sort((todoA, todoB) => -todoA.id + todoB.id);
+    return todayToDos;
   }
 
   moveToDoPriorityInProjectUp(toDoId, project) {

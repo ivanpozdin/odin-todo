@@ -218,10 +218,16 @@ const createToDoContainer = function (todo, isCompleted) {
   const titleDescriptionControlsHtml =
     generateToDoTitleDescriptionAndControlsHtml(todo, isCompleted);
   toDoContainer.insertAdjacentHTML("afterbegin", titleDescriptionControlsHtml);
+
+  const dateInput = toDoContainer.querySelector('input[type="date"]');
+  if (
+    document.querySelector(".content .project-title").textContent === "today"
+  ) {
+    console.log(".content .project-title");
+    dateInput.valueAsDate = new Date();
+  }
   if (todo?.date) {
-    toDoContainer.querySelector('input[type="date"]').valueAsDate = new Date(
-      todo.date
-    );
+    dateInput.valueAsDate = new Date(todo.date);
   }
   return toDoContainer;
 };

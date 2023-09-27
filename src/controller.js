@@ -6,7 +6,7 @@ import handleGeneratingNewToDo from "./view/addingNewToDo.js";
 import generateProjectsView from "./view/projectsView.js";
 import handleGeneratingNewProject from "./view/newProject.js";
 
-const fixedProjects = ["📬 inbox", "🔥 today", "📅 someday", "🗓️ anytime"];
+const fixedProjects = ["inbox", "today", "someday", "anytime"];
 const state = new State(fixedProjects);
 
 const handleProjectClick = function (projectName) {
@@ -16,7 +16,7 @@ const handleProjectClick = function (projectName) {
     handleDeleteToDo,
     handleEditToDo,
     handleCompleteToDo,
-    projectName === "✅ completed"
+    projectName === "completed"
   );
 };
 
@@ -28,10 +28,11 @@ const handleCompleteToDo = function (id) {
     handleDeleteToDo,
     handleEditToDo,
     handleCompleteToDo,
-    state.currentProject === "✅ completed"
+    state.currentProject === "completed"
   );
 };
 const handleAddNewProject = function (projectName) {
+  console.log("handling adding new project");
   state.addProject(projectName);
   generateProjectsView(state.userProjectNames, handleProjectClick);
 };
