@@ -220,10 +220,10 @@ const createToDoContainer = function (todo, isCompleted) {
   toDoContainer.insertAdjacentHTML("afterbegin", titleDescriptionControlsHtml);
 
   const dateInput = toDoContainer.querySelector('input[type="date"]');
-  if (
-    document.querySelector(".content .project-title").textContent === "today"
-  ) {
-    console.log(".content .project-title");
+  const projectTitle = document.querySelector(
+    ".content .project-title"
+  ).textContent;
+  if (projectTitle === "today" || projectTitle === "someday") {
     dateInput.valueAsDate = new Date();
   }
   if (todo?.date) {

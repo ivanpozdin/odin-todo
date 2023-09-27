@@ -27,9 +27,12 @@ export default class State {
 
   addToDo(title, description, projects, date = null) {
     if (this.#currentProject === "completed") return;
-    const projectWithCurrent = [
+    let projectWithCurrent = [
       ...new Set(projects.concat([this.currentProject])),
     ];
+    projectWithCurrent = projectWithCurrent.filter(
+      (project) => !(project in ["someday", "anytime", "today", "completed"])
+    );
     const toDo = ToDo(title, description, projectWithCurrent, date);
     this.#toDos[toDo.id] = toDo;
     projectWithCurrent.forEach((project) => {
@@ -89,8 +92,17 @@ export default class State {
       return Object.values(this.#completedToDos);
     }
     if (this.#currentProject === "today") {
-      return this.todayToDos;
+      return this.#todayToDos;
     }
+
+    if (this.#currentProject === "someday") {
+      return this.#somedayToDos;
+    }
+
+    if (this.#currentProject === "anytime") {
+      return this.#anytimeToDos;
+    }
+
     return this.#projects[this.#currentProject].map(
       (toDoId) => this.#toDos[toDoId]
     );
@@ -214,7 +226,19 @@ export default class State {
     );
   }
 
-  get todayToDos() {
+  get #somedayToDos() {
+    const somedayToDos = Object.values(this.#toDos).filter((toDo) => {
+      return toDo.date;
+    });
+    somedayToDos.sort((todoA, todoB) => -todoA.id + todoB.id);
+    return somedayToDos;
+  }
+
+  get #anytimeToDos() {
+    return Object.values(this.#toDos);
+  }
+
+  get #todayToDos() {
     const today = new Date();
 
     const todayToDos = Object.values(this.#toDos).filter((toDo) => {
