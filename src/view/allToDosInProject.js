@@ -16,6 +16,15 @@ export default function generateAllToDosInProject(
   } else {
     deleteProjectBtn.classList.remove("hidden");
   }
+
+  const newToDoBtn = document.getElementById("add-todo-btn");
+  console.log(newToDoBtn);
+  if (projectName === "completed") {
+    newToDoBtn.classList.add("hidden");
+  } else {
+    newToDoBtn.classList.remove("hidden");
+  }
+
   document.querySelector(".project-title").textContent = projectName;
   const toDoListElement = document.querySelector(".todo-list");
   toDoListElement.innerHTML = "";

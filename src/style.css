@@ -1,5 +1,6 @@
 :root {
   font-size: 62.5%;
+  --sidebar-bg-color: #f3f4f6;
 }
 
 *,
@@ -23,7 +24,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  background-color: #f3f4f6;
+  background-color: var(--sidebar-bg-color);
   gap: 1rem;
 }
 
@@ -99,6 +100,7 @@ body {
 }
 
 #add-project-btn {
+  cursor: pointer;
   border: 2px solid transparent;
   border-radius: 0.5rem;
   font-size: 1.5rem;
@@ -107,10 +109,15 @@ body {
 }
 
 #add-project-btn:hover {
-  border: 2px solid #dbdbdb;
+  background-color: #0ba6ffbe;
+}
+
+#add-project-btn:focus {
+  border: 2px solid var(--sidebar-bg-color);
 }
 
 #add-todo-btn {
+  cursor: pointer;
   margin-left: 4rem;
   width: auto;
   align-self: flex-start;
@@ -120,8 +127,11 @@ body {
   color: #fff;
   background-color: #0ba6ff;
 }
-#add-todo-btn:hover {
+#add-todo-btn:focus {
   border: 2px solid #fff;
+}
+#add-todo-btn:hover {
+  background-color: #0ba6ffbe;
 }
 
 #new-project-input-sidebar {
@@ -174,6 +184,7 @@ body {
 }
 
 .delete-project-btn {
+  cursor: pointer;
   align-self: center;
   background-color: transparent;
   border: 1px solid transparent;
