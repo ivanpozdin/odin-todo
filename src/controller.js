@@ -10,7 +10,6 @@ const fixedProjects = ["inbox", "today", "someday", "anytime"];
 const state = new State(fixedProjects);
 
 const handleProjectClick = function (projectName) {
-  console.log("hi!");
   generateAllToDosInProject(
     projectName,
     state.getAllToDosInProject(projectName),

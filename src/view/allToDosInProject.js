@@ -18,7 +18,7 @@ export default function generateAllToDosInProject(
   }
 
   const newToDoBtn = document.getElementById("add-todo-btn");
-  console.log(newToDoBtn);
+
   if (projectName === "completed") {
     newToDoBtn.classList.add("hidden");
   } else {
