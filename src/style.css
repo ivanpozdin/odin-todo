@@ -98,6 +98,32 @@ body {
   margin: 0;
 }
 
+#add-project-btn {
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  font-size: 1.5rem;
+  color: #fff;
+  background-color: #0ba6ff;
+}
+
+#add-project-btn:hover {
+  border: 2px solid #dbdbdb;
+}
+
+#add-todo-btn {
+  margin-left: 4rem;
+  width: auto;
+  align-self: flex-start;
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  font-size: 1.5rem;
+  color: #fff;
+  background-color: #0ba6ff;
+}
+#add-todo-btn:hover {
+  border: 2px solid #fff;
+}
+
 #new-project-input-sidebar {
   width: 100%;
   cursor: text;
@@ -142,13 +168,17 @@ body {
 .content-header {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 1rem;
+  padding-top: 2rem;
 }
 
 .delete-project-btn {
   align-self: center;
   background-color: transparent;
   border: 1px solid transparent;
+  border-radius: 0.5rem;
+  line-height: 0;
 }
 
 .delete-project-btn:hover {
@@ -159,6 +189,8 @@ body {
 .project-title {
   text-align: center;
   font-size: 3rem;
+  margin-bottom: 0;
+  margin-top: 0;
 }
 
 .projects-selection {

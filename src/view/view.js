@@ -1,4 +1,4 @@
-import TrashIcon from "./imgs/trash.svg";
+import TrashIcon from "./imgs/delete-project.svg";
 import InboxIcon from "./imgs/inbox.svg";
 import TodayIcon from "./imgs/today.svg";
 import SomedayIcon from "./imgs/someday.svg";
@@ -11,10 +11,6 @@ export default function generateView(
 ) {
   const viewHtml = `
   <div class="sidebar">
-      <div class="projects-controls">
-        <button type="button" id="add-todo-btn">+ to-do</button>
-        <button type="button" id="add-project-btn">+ project</button>
-      </div>
       <button class="fixed-todos-project todos-project" id="inbox">
         <img src="${InboxIcon}" alt="Inbox"> <span class="todo-project-title">inbox</span>
       </button>
@@ -30,16 +26,18 @@ export default function generateView(
       <button class="fixed-todos-project todos-project" id="completed-project">
       <img src="${CompletedIcon}" alt="Completed"> <span class="todo-project-title">completed</span>
       </button>
+      <button type="button" id="add-project-btn">New Project</button>
       <div class="user-projects-container">
       </div>
     </div>
     <div class="content">
       <div class="content-header">
+        <h2 class="project-title">inbox</h2>
         <button class="delete-project-btn">
           <img src="${TrashIcon}" alt="Delete project">
         </button>
-        <h2 class="project-title">inbox</h2>
       </div>
+      <button type="button" id="add-todo-btn">New To-Do</button>
       <ul class="todo-list">
       </ul>
     </div>
