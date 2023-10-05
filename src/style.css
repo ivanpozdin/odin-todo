@@ -23,8 +23,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1rem;
   background-color: #f3f4f6;
+  gap: 1rem;
 }
 
 .user-projects-container {
@@ -47,6 +47,10 @@ body {
   border: none;
   background-color: transparent;
   font-size: 1.5rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
 }
 
 .todo-project-title {
@@ -57,6 +61,7 @@ body {
 
 .todos-project:hover {
   background-color: #e5e7eb;
+  cursor: pointer;
 }
 
 .content {
@@ -93,8 +98,14 @@ body {
   margin: 0;
 }
 
+#new-project-input-sidebar {
+  width: 100%;
+  cursor: text;
+}
+
 .title-todo:empty:before,
-.description-todo:empty:before {
+.description-todo:empty:before,
+#new-project-input-sidebar:empty:before {
   content: attr(data-placeholder);
   color: #aaa;
 }
@@ -108,6 +119,7 @@ body {
   display: flex;
   gap: 0.5rem;
   justify-content: flex-end;
+  align-items: flex-start;
 }
 
 .todo-controls {
@@ -115,13 +127,18 @@ body {
   border-radius: 0.3rem;
   background-color: transparent;
   font-size: 2rem;
-  align-self: flex-end;
+  align-self: flex-start;
   justify-self: self-end;
 }
 .todo-controls:hover {
   background-color: #e5e7eb;
 }
 
+.todo-controls img,
+.content-header img,
+.todos-project img {
+  height: 2rem;
+}
 .content-header {
   display: flex;
   justify-content: center;
@@ -130,6 +147,13 @@ body {
 
 .delete-project-btn {
   align-self: center;
+  background-color: transparent;
+  border: 1px solid transparent;
+}
+
+.delete-project-btn:hover {
+  border: 1px solid black;
+  background-color: #aaa;
 }
 
 .project-title {

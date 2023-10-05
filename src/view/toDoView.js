@@ -1,3 +1,6 @@
+import TrashIcon from "./imgs/trash.svg";
+import ProjectsIcon from "./imgs/projects.svg";
+
 const createProjectsContainer = function () {
   const projectSelectionContainer = document.createElement("div");
   projectSelectionContainer.classList.add("project-selection-container");
@@ -102,8 +105,12 @@ const generateToDoTitleDescriptionAndControlsHtml = function (
   }</div>
   <div class="todo-controls-container">
     <input type="date" value="" />
-    <button class="projects-btn todo-controls">🏷️</button>
-    <button class="remove-todo-btn todo-controls">🗑️</button>
+    <button class="projects-btn todo-controls">
+      <img src="${ProjectsIcon}" alt="Show projects">
+    </button>
+    <button class="remove-todo-btn todo-controls">
+      <img src="${TrashIcon}" alt="Delete to-do">
+    </button>
   </div>
 `;
   return toDoHtml;
@@ -152,11 +159,16 @@ const saveOnBlur = function (toDoContainer, todo, handleEditToDo) {
     toDoContainer.querySelector(".title-todo"),
     toDoContainer.querySelector(".description-todo"),
   ];
-  [titleElement, descriptionElement].forEach((element) =>
+  [titleElement, descriptionElement].forEach((element) => {
     element.addEventListener("blur", () => {
       saveToDo(toDoContainer, todo, handleEditToDo);
-    })
-  );
+    });
+    element.addEventListener("input", () => {
+      if (element.textContent === "") {
+        element.innerHTML = "";
+      }
+    });
+  });
   const dateControl = toDoContainer.querySelector('input[type="date"]');
   dateControl.addEventListener("change", () => {
     saveToDo(toDoContainer, todo, handleEditToDo);
@@ -219,6 +231,13 @@ const createToDoContainer = function (todo, isCompleted) {
     generateToDoTitleDescriptionAndControlsHtml(todo, isCompleted);
   toDoContainer.insertAdjacentHTML("afterbegin", titleDescriptionControlsHtml);
 
+  const title = toDoContainer.querySelector(".title-todo");
+  title.addEventListener("input", () => {
+    if (title.textContent == "") {
+      title.innerHTML = "";
+    }
+  });
+
   const dateInput = toDoContainer.querySelector('input[type="date"]');
   const projectTitle = document.querySelector(
     ".content .project-title"
@@ -264,5 +283,6 @@ export default function generateToDoElement(
     saveToDo.bind(null, toDoContainer, todo, handleEditToDo)
   );
   saveOnBlur(toDoContainer, todo, handleEditToDo);
+
   return toDoContainer;
 }

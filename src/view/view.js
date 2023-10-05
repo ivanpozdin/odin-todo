@@ -1,3 +1,10 @@
+import TrashIcon from "./imgs/trash.svg";
+import InboxIcon from "./imgs/inbox.svg";
+import TodayIcon from "./imgs/today.svg";
+import SomedayIcon from "./imgs/someday.svg";
+import AnytimeIcon from "./imgs/anytime.svg";
+import CompletedIcon from "./imgs/completed.svg";
+
 export default function generateView(
   handleProjectClick,
   handleDeleteProjectOnClick
@@ -9,26 +16,28 @@ export default function generateView(
         <button type="button" id="add-project-btn">+ project</button>
       </div>
       <button class="fixed-todos-project todos-project" id="inbox">
-        📬 <span class="todo-project-title">inbox</span>
+        <img src="${InboxIcon}" alt="Inbox"> <span class="todo-project-title">inbox</span>
       </button>
       <button class="fixed-todos-project todos-project">
-        🔥 <span class="todo-project-title">today</span>
+      <img src="${TodayIcon}" alt="Today"> <span class="todo-project-title">today</span>
       </button>
       <button class="fixed-todos-project todos-project">
-        📅 <span class="todo-project-title">someday</span>
+      <img src="${SomedayIcon}" alt="Someday"> <span class="todo-project-title">someday</span>
         </button>
       <button class="fixed-todos-project todos-project" id="anytime">
-        🗓️ <span class="todo-project-title">anytime</span>
+      <img src="${AnytimeIcon}" alt="Anytime"> <span class="todo-project-title">anytime</span>
       </button>
       <button class="fixed-todos-project todos-project" id="completed-project">
-        ✅ <span class="todo-project-title">completed</span>
+      <img src="${CompletedIcon}" alt="Completed"> <span class="todo-project-title">completed</span>
       </button>
       <div class="user-projects-container">
       </div>
     </div>
     <div class="content">
       <div class="content-header">
-        <button class="delete-project-btn">🗑️</button>
+        <button class="delete-project-btn">
+          <img src="${TrashIcon}" alt="Delete project">
+        </button>
         <h2 class="project-title">inbox</h2>
       </div>
       <ul class="todo-list">

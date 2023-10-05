@@ -1,14 +1,15 @@
 const generateNewProjectElement = function () {
   const projectElement = document.createElement("div");
-  projectElement.setAttribute("class", "todos-project");
+  projectElement.classList.add("todos-project");
+  projectElement.id = "new-project-input-sidebar";
   projectElement.setAttribute("contenteditable", "true");
+  projectElement.dataset.placeholder = "project...";
   return projectElement;
 };
 
 export default function handleGeneratingNewProject(handler) {
   const addProjectBtn = document.getElementById("add-project-btn");
   addProjectBtn.addEventListener("click", function () {
-    console.log("aaaaaaa");
     const projectContainer = document.querySelector(".user-projects-container");
     const newProjectElement = generateNewProjectElement();
     projectContainer.insertAdjacentElement("afterbegin", newProjectElement);
@@ -19,6 +20,12 @@ export default function handleGeneratingNewProject(handler) {
         handler(projectName);
       }
       newProjectElement.remove();
+    });
+
+    newProjectElement.addEventListener("input", () => {
+      if (newProjectElement.textContent === "") {
+        newProjectElement.innerHTML = "";
+      }
     });
   });
 }
