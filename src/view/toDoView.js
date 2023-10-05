@@ -111,9 +111,15 @@ const createToDoContainer = function (todo, isCompleted) {
   toDoContainer.insertAdjacentHTML("afterbegin", titleDescriptionControlsHtml);
 
   const title = toDoContainer.querySelector(".title-todo");
+  const description = toDoContainer.querySelector(".description-todo");
   title.addEventListener("input", () => {
     if (title.textContent == "") {
       title.innerHTML = "";
+    }
+  });
+  description.addEventListener("input", () => {
+    if (description.textContent == "") {
+      description.innerHTML = "";
     }
   });
 

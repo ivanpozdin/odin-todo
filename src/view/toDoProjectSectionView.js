@@ -1,3 +1,6 @@
+import AddProjectIcon from "./imgs/add.svg";
+import RemoveProjectIcon from "./imgs/close.svg";
+
 const isLastProjectEmpty = function (addProjectBtn) {
   const lastProjectElement = addProjectBtn.previousElementSibling;
   return (
@@ -11,7 +14,7 @@ const createProjectsContainer = function () {
   projectSelectionContainer.classList.add("project-selection-container");
   const addProjectBtn = document.createElement("button");
   addProjectBtn.classList.add("add-project-to-todo-btn");
-  addProjectBtn.innerText = "➕";
+  addProjectBtn.innerHTML = `<img src="${AddProjectIcon}" alt="Add project">`;
   projectSelectionContainer.insertAdjacentElement("beforeend", addProjectBtn);
   return projectSelectionContainer;
 };
@@ -19,7 +22,7 @@ const createProjectsContainer = function () {
 const createDeleteButtonForProject = function () {
   const deleteBtn = document.createElement("button");
   deleteBtn.classList.add("delete-project-in-project-selection-btn");
-  deleteBtn.textContent = "x";
+  deleteBtn.innerHTML = `<img src="${RemoveProjectIcon}" alt="Remove project">`;
   return deleteBtn;
 };
 
