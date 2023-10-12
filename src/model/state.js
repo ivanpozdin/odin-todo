@@ -25,16 +25,23 @@ export default class State {
     }
   }
 
-  addToDo(title, description, projects, date = null) {
+  addToDo(toDoProperties) {
     if (this.#currentProject === "completed") return;
-    let projectWithCurrent = [
-      ...new Set(projects.concat([this.currentProject])),
-    ];
+
+    let projectWithCurrent = [this.currentProject];
+    if (toDoProperties.projects) {
+      projectWithCurrent = [
+        ...new Set(projectWithCurrent.concat(toDoProperties.projects)),
+      ];
+    }
+
     projectWithCurrent = projectWithCurrent.filter(
       (project) => !(project in ["someday", "anytime", "today", "completed"])
     );
-    const toDo = ToDo(title, description, projectWithCurrent, date);
+    toDoProperties.projects = projectWithCurrent;
+    const toDo = ToDo(toDoProperties);
     this.#toDos[toDo.id] = toDo;
+
     projectWithCurrent.forEach((project) => {
       if (project in this.#projects) {
         this.#projects[project].unshift(toDo.id);
@@ -44,6 +51,13 @@ export default class State {
     });
     this.#setLocalStorage();
     return toDo.id;
+  }
+
+  getToDoProjectsById(id) {
+    if (!(id in this.#toDos)) {
+      return [];
+    }
+    return [...this.#toDos[id].projects];
   }
 
   addProject(projectName) {
@@ -108,22 +122,33 @@ export default class State {
     );
   }
 
-  editToDo(toDoId, title, description, newProjects, date) {
+  editToDo(toDoEditedProperties) {
     if (this.#currentProject === "completed") {
       return;
     }
-    if (!(toDoId in this.#toDos)) {
-      this.addToDo(title, description, newProjects, date);
-      return;
+    if (!toDoEditedProperties.id || !(toDoEditedProperties.id in this.#toDos)) {
+      return this.addToDo(toDoEditedProperties);
     }
-    const oldProjects = this.#toDos[toDoId].projects;
-    const removedProjects = oldProjects.filter(
-      (oldProject) => !newProjects.includes(oldProject)
-    );
-    this.#updateToDo(toDoId, title, description, newProjects, date);
-    this.#saveNewProjects(oldProjects, newProjects, toDoId);
-    this.#deleteToDoFromExcludedProjects(removedProjects, toDoId);
+    const toDo = this.#toDos[toDoEditedProperties.id];
+    if ("projects" in toDoEditedProperties) {
+      const oldProjects = toDo.projects;
+      const removedProjects = oldProjects.filter(
+        (oldProject) => !toDoEditedProperties.projects.includes(oldProject)
+      );
+      this.#saveNewProjects(
+        oldProjects,
+        toDoEditedProperties.projects,
+        toDoEditedProperties.id
+      );
+      this.#deleteToDoFromExcludedProjects(
+        removedProjects,
+        toDoEditedProperties.id
+      );
+    }
+
+    this.#updateToDo(toDoEditedProperties);
     this.#setLocalStorage();
+    return toDo.id;
   }
 
   #restoreToDoFromCompleted(toDoId) {
@@ -160,11 +185,19 @@ export default class State {
     }
   }
 
-  #updateToDo(toDoId, title, description, projects, date) {
-    this.#toDos[toDoId].title = title;
-    this.#toDos[toDoId].description = description;
-    this.#toDos[toDoId].projects = projects;
-    this.#toDos[toDoId].date = date;
+  #updateToDo(toDo) {
+    if ("title" in toDo) {
+      this.#toDos[toDo.id].title = toDo.title;
+    }
+    if ("description" in toDo) {
+      this.#toDos[toDo.id].description = toDo.description;
+    }
+    if ("projects" in toDo) {
+      this.#toDos[toDo.id].projects = toDo.projects;
+    }
+    if ("date" in toDo) {
+      this.#toDos[toDo.id].date = toDo.date;
+    }
   }
 
   #deleteToDoFromExcludedProjects(removedProjects, id) {

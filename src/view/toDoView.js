@@ -29,9 +29,9 @@ const generateToDoTitleDescriptionAndControlsHtml = function (
   return toDoHtml;
 };
 
-const getProjects = function (existingProjects, toDoElement) {
+const getProjects = function (toDoElement) {
   if (!document.querySelector(".project-selection-container")) {
-    return existingProjects;
+    return null;
   }
   const projectElements = [
     ...toDoElement.getElementsByClassName("project-selection"),
@@ -76,21 +76,26 @@ const saveToDo = function (toDoContainer, todo, handleEditToDo) {
     toDoContainer.querySelector(".title-todo"),
     toDoContainer.querySelector(".description-todo"),
   ];
-  if (
-    titleElement.textContent.trim() === "" &&
-    descriptionElement.textContent.trim() === ""
-  ) {
+  if (titleElement.textContent.trim() === "") {
     return;
   }
-  const projects = getProjects(todo?.projects ?? [], toDoContainer);
+  const editedToDo = { title: titleElement.textContent };
+  if (descriptionElement) {
+    editedToDo.description = descriptionElement.textContent;
+  }
+  if (toDoContainer.dataset.id) {
+    editedToDo.id = toDoContainer.dataset.id;
+  }
+  const projects = getProjects(toDoContainer);
+  if (projects !== null) {
+    editedToDo.projects = projects;
+  }
   const date = getDate(toDoContainer);
-  handleEditToDo(
-    toDoContainer.dataset.id,
-    titleElement.textContent,
-    descriptionElement.textContent,
-    projects,
-    date
-  );
+  if (date !== null) {
+    editedToDo.date = date;
+  }
+  const newId = handleEditToDo(editedToDo);
+  toDoContainer.dataset.id = newId;
 };
 
 const doOnDeleteBtn = function (toDoContainer, handleDeleteToDo) {
@@ -136,14 +141,14 @@ const createToDoContainer = function (todo, isCompleted) {
   return toDoContainer;
 };
 
-const doOnCompleteToDo = function (toDoContainer, id, handleCompleteToDo) {
+const doOnCompleteToDo = function (toDoContainer, handleCompleteToDo) {
   const checkbox = toDoContainer.querySelector(".complete-todo-checkbox");
   checkbox.addEventListener("click", () => {
-    if (!id) {
+    if (!toDoContainer.dataset.id) {
       toDoContainer.remove();
       return;
     }
-    handleCompleteToDo(id);
+    handleCompleteToDo(toDoContainer.dataset.id);
   });
 };
 
@@ -159,12 +164,14 @@ export default function generateToDoElement(
   const isCompleted = projectTitle === "completed";
   if (isCompleted && !todo) return;
   const toDoContainer = createToDoContainer(todo, isCompleted);
-  doOnCompleteToDo(toDoContainer, todo?.id, handleCompleteToDo);
+  doOnCompleteToDo(toDoContainer, handleCompleteToDo);
   doOnDeleteBtn(toDoContainer, handleDeleteToDo);
   if (isCompleted) return toDoContainer;
   doOnShowProjects(
     toDoContainer,
-    todo?.projects ?? [],
+    todo?.projects ?? [
+      document.querySelector(".content .project-title").textContent,
+    ],
     saveToDo.bind(null, toDoContainer, todo, handleEditToDo)
   );
   saveOnBlur(toDoContainer, todo, handleEditToDo);

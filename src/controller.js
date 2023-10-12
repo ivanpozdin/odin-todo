@@ -42,14 +42,13 @@ const handleCompleteToDo = function (id) {
   );
 };
 const handleAddNewProject = function (projectName) {
-  console.log("handling adding new project");
   state.addProject(projectName);
   generateProjectsView(state.userProjectNames, handleProjectClick);
 };
 
-const handleEditToDo = function (toDoId, title, description, projects, date) {
-  state.editToDo(toDoId, title, description, projects, date);
-  if (!projects.includes(state.currentProject)) {
+const handleEditToDo = function (toDoEditedProperties) {
+  const toDoId = state.editToDo(toDoEditedProperties);
+  if (!state.getToDoProjectsById(toDoId).includes(state.currentProject)) {
     generateAllToDosInProject(
       state.currentProject,
       state.getAllToDosInProject(),
@@ -59,6 +58,7 @@ const handleEditToDo = function (toDoId, title, description, projects, date) {
     );
   }
   generateProjectsView(state.userProjectNames, handleProjectClick);
+  return toDoId;
 };
 
 const handleDeleteToDo = function (id) {

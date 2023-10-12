@@ -1,9 +1,9 @@
-export default function ToDo(title, description, projects, date = null) {
+export default function ToDo(toDoProperties) {
   return {
-    title,
-    description,
-    projects,
-    date,
+    title: toDoProperties.title ?? "",
+    description: toDoProperties.description ?? "",
+    projects: toDoProperties.projects,
+    date: toDoProperties.description ?? "",
     id: new Date().getTime(),
   };
 }
