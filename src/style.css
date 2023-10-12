@@ -96,6 +96,18 @@ body {
   margin: 0;
 }
 
+.view-details-btn {
+  grid-area: 1/ 3/2/ 4;
+  background-color: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  justify-self: flex-end;
+  align-self: flex-start;
+}
+.view-details-btn img {
+  height: 2rem;
+}
+
 .description-todo {
   grid-area: 2/ 2/3/ 3;
   align-self: flex-start;
@@ -185,7 +197,8 @@ body {
 }
 
 .delete-project-btn:hover,
-.todo-controls:hover {
+.todo-controls:hover,
+.view-details-btn:hover {
   background-color: var(--sidebar-bg-color);
 }
 

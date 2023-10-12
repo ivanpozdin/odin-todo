@@ -106,19 +106,18 @@ const insertProjectsToProjectContainer = function (
   );
 };
 
-export default function doOnShowProjects(toDoContainer, toDoProjects, save) {
-  toDoContainer.querySelector(".projects-btn").addEventListener("click", () => {
-    const existingProjectsContainer = toDoContainer.querySelector(
-      ".project-selection-container"
-    );
+export default function doOnShowProjects(toDoControls, toDoProjects, save) {
+  toDoControls.querySelector(".projects-btn").addEventListener("click", () => {
+    const existingProjectsContainer = toDoControls
+      .closest("li.todo")
+      .querySelector(".project-selection-container");
     if (existingProjectsContainer) {
       existingProjectsContainer.remove();
       return;
     }
     const projectsContainer = createProjectsContainer();
-
-    toDoContainer.insertAdjacentElement("beforeend", projectsContainer);
     insertProjectsToProjectContainer(projectsContainer, toDoProjects, save);
+    toDoControls.insertAdjacentElement("afterend", projectsContainer);
     handleAddingNewProjectToUI(projectsContainer, save);
   });
 }
