@@ -9,7 +9,7 @@ const generateToDoHeaderHtml = function (todo, isCompleted) {
   <input type="checkbox" ${
     isCompleted ? "checked" : ""
   } class="complete-todo-checkbox" />
-  <h3 class="title-todo" contenteditable="true" data-placeholder="title" data-is-hidden="${Boolean(
+  <h3 class="title-todo" contenteditable="${!isCompleted}" data-placeholder="title" data-is-hidden="${Boolean(
     todo
   )}">${todo ? todo.title : ""}</h3>
   <button class="view-details-btn"><img src="${
@@ -152,10 +152,14 @@ const generateControlsElement = function (
   handleDeleteToDo,
   toDoContainer
 ) {
+  console.log("generateControlsElement");
+  const isCompleted =
+    document.querySelector(".content-header .project-title").textContent ===
+    "completed";
   const controls = document.createElement("div");
   controls.classList.add("todo-controls-container");
   const controlsInnerHtml = `
-  <input type="date" value="" />
+  <input type="date" value="" ${isCompleted ? "readonly" : ""}/>
     <button class="projects-btn todo-controls">
       <img src="${ProjectsIcon}" alt="Show projects">
     </button>
@@ -174,6 +178,7 @@ const generateControlsElement = function (
   }
   if (toDo?.date) {
     dateInput.valueAsDate = new Date(toDo.date);
+    console.log(dateInput.valueAsDate);
   }
 
   controls.querySelector(".remove-todo-btn")?.addEventListener("click", () => {
@@ -274,7 +279,6 @@ export default function generateToDoElement(
     projectsElement: generateProjectSelectionContainer(todo?.projects, save),
   };
   doOnCompleteToDo(toDoContainer, handleCompleteToDo);
-  if (isCompleted) return toDoContainer;
   doOnShowOrHideDetails(todoElements, save);
   doOnShowProjects(todoElements, save);
   saveOnBlur(todoElements, save);
