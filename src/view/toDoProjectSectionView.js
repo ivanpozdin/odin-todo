@@ -108,7 +108,14 @@ const insertProjectsToProjectContainer = function (
 
 export default function generateProjectSelectionContainer(toDoProjects, save) {
   const projectsContainer = createProjectsContainer();
-  insertProjectsToProjectContainer(projectsContainer, toDoProjects, save);
+  const projectsOrCurrentProject = toDoProjects ?? [
+    document.querySelector(".content .project-title").textContent,
+  ];
+  insertProjectsToProjectContainer(
+    projectsContainer,
+    projectsOrCurrentProject,
+    save
+  );
   handleAddingNewProjectToUI(projectsContainer, save);
   return projectsContainer;
 }
