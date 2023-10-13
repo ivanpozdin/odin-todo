@@ -9,6 +9,8 @@ export default function generateView(
   handleProjectClick,
   handleDeleteProjectOnClick
 ) {
+  document.querySelector("title").textContent = "TO DO";
+
   const viewHtml = `
   <div class="sidebar">
       <button class="fixed-todos-project todos-project" id="inbox">
