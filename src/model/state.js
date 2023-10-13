@@ -35,7 +35,7 @@ export default class State {
       ];
     }
     projectWithCurrent = projectWithCurrent.filter(
-      (project) => !this.#fixedProjects.includes(project)
+      (project) => project === "inbox" || !this.#fixedProjects.includes(project)
     );
 
     toDoProperties.projects = projectWithCurrent;
