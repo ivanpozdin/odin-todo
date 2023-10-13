@@ -58,13 +58,17 @@ const handleAddNewProject = function (projectName) {
 
 const handleEditToDo = function (toDoEditedProperties) {
   const toDoId = state.editToDo(toDoEditedProperties);
-  if (
-    (state.currentProject === "today" &&
-      "date" in toDoEditedProperties &&
-      !isDateToday(new Date(toDoEditedProperties.date))) ||
-    (!["today", "someday", "anytime"].includes(state.currentProject) &&
-      !state.getToDoProjectsById(toDoId).includes(state.currentProject))
-  ) {
+  const isTodayChanged =
+    state.currentProject === "today" &&
+    "date" in toDoEditedProperties &&
+    !isDateToday(new Date(toDoEditedProperties.date));
+  const isNotComputedProject = !["today", "someday", "anytime"].includes(
+    state.currentProject
+  );
+  const wasCurrentProjectDeleted = !state
+    .getToDoProjectsById(toDoId)
+    .includes(state.currentProject);
+  if (isTodayChanged || (isNotComputedProject && wasCurrentProjectDeleted)) {
     generateAllToDosInProject(
       state.currentProject,
       state.getAllToDosInProject(),
