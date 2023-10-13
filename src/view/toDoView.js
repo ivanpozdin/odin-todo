@@ -190,6 +190,40 @@ const generateControlsElement = function (
   return controls;
 };
 
+const showDetails = function (
+  toDoContainer,
+  descriptionElement,
+  controlsElement
+) {
+  if (toDoContainer.dataset.isHidden !== "true") return;
+  toDoContainer.querySelector(".view-details-btn img").src = HideIcon;
+  toDoContainer.dataset.isHidden = "false";
+  toDoContainer.insertAdjacentElement("beforeend", descriptionElement);
+  toDoContainer.insertAdjacentElement("beforeend", controlsElement);
+  descriptionElement.focus();
+};
+
+const hideDetails = function (
+  toDoContainer,
+  handleEditToDo,
+  descriptionElement,
+  controlsElement,
+  projectsElement
+) {
+  saveToDo(toDoContainer, handleEditToDo);
+  toDoContainer.dataset.isHidden = "true";
+  toDoContainer.querySelector(".view-details-btn img").src = ShowIcon;
+  descriptionElement.remove();
+  controlsElement.remove();
+  projectsElement.remove();
+  const existingProjectsContainer = toDoContainer.querySelector(
+    ".project-selection-container"
+  );
+  if (existingProjectsContainer) {
+    existingProjectsContainer.remove();
+  }
+};
+
 const doOnShowOrHideDetails = function (
   toDoContainer,
   handleEditToDo,
@@ -200,26 +234,22 @@ const doOnShowOrHideDetails = function (
   const showHideBtn = toDoContainer.querySelector(".view-details-btn");
   showHideBtn.addEventListener("click", () => {
     if (toDoContainer.dataset.isHidden === "true") {
-      toDoContainer.querySelector(".view-details-btn img").src = HideIcon;
-      toDoContainer.dataset.isHidden = "false";
-      toDoContainer.insertAdjacentElement("beforeend", descriptionElement);
-      toDoContainer.insertAdjacentElement("beforeend", controlsElement);
-      descriptionElement.focus();
+      showDetails(toDoContainer, descriptionElement, controlsElement);
       return;
     }
-    saveToDo(toDoContainer, handleEditToDo);
-    toDoContainer.dataset.isHidden = "true";
-    toDoContainer.querySelector(".view-details-btn img").src = ShowIcon;
-    descriptionElement.remove();
-    controlsElement.remove();
-    projectsElement.remove();
-    const existingProjectsContainer = toDoContainer.querySelector(
-      ".project-selection-container"
+    hideDetails(
+      toDoContainer,
+      handleEditToDo,
+      descriptionElement,
+      controlsElement,
+      projectsElement
     );
-    if (existingProjectsContainer) {
-      existingProjectsContainer.remove();
-    }
   });
+  toDoContainer
+    .querySelector(".title-todo")
+    .addEventListener("dblclick", () => {
+      showDetails(toDoContainer, descriptionElement, controlsElement);
+    });
 };
 
 const doOnShowProjects = function (
