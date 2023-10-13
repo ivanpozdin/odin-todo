@@ -62,9 +62,12 @@ const handleEditToDo = function (toDoEditedProperties) {
     state.currentProject === "today" &&
     "date" in toDoEditedProperties &&
     !isDateToday(new Date(toDoEditedProperties.date));
-  const isNotComputedProject = !["today", "someday", "anytime"].includes(
-    state.currentProject
-  );
+  const isNotComputedProject = ![
+    "today",
+    "someday",
+    "anytime",
+    "completed",
+  ].includes(state.currentProject);
   const wasCurrentProjectDeleted = !state
     .getToDoProjectsById(toDoId)
     .includes(state.currentProject);

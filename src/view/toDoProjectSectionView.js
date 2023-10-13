@@ -31,6 +31,10 @@ const handleDeletingProject = function (
   projectContainer,
   save
 ) {
+  const isCompleted =
+    document.querySelector(".content-header .project-title").textContent ===
+    "completed";
+  if (isCompleted) return;
   deleteProjectBtn.addEventListener("click", () => {
     projectContainer.remove();
     save();
@@ -54,9 +58,12 @@ const createEmptyProjectContainerElement = function () {
 };
 
 const createNewProjectSelectionElement = function (projectName = "") {
+  const isCompleted =
+    document.querySelector(".content-header .project-title").textContent ===
+    "completed";
   const newProjectSelectionElement = document.createElement("div");
   newProjectSelectionElement.classList.add("project-selection");
-  newProjectSelectionElement.setAttribute("contenteditable", "true");
+  newProjectSelectionElement.setAttribute("contenteditable", !isCompleted);
   newProjectSelectionElement.textContent = projectName;
   return newProjectSelectionElement;
 };
@@ -77,6 +84,10 @@ const createFullProjectContainer = function (projectName = "", save) {
 };
 
 const handleAddingNewProjectToUI = function (projectsContainer, save) {
+  const isCompleted =
+    document.querySelector(".content-header .project-title").textContent ===
+    "completed";
+  if (isCompleted) return;
   const addProjectBtn = projectsContainer.querySelector(
     ".add-project-to-todo-btn"
   );
