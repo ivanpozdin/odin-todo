@@ -34,12 +34,14 @@ export default class State {
         ...new Set(projectWithCurrent.concat(toDoProperties.projects)),
       ];
     }
-
     projectWithCurrent = projectWithCurrent.filter(
-      (project) => !(project in ["someday", "anytime", "today", "completed"])
+      (project) => !this.#fixedProjects.includes(project)
     );
+
     toDoProperties.projects = projectWithCurrent;
+
     const toDo = ToDo(toDoProperties);
+
     this.#toDos[toDo.id] = toDo;
 
     projectWithCurrent.forEach((project) => {
@@ -117,9 +119,10 @@ export default class State {
       return this.#anytimeToDos;
     }
 
-    return this.#projects[this.#currentProject].map(
+    const todos = this.#projects[this.#currentProject].map(
       (toDoId) => this.#toDos[toDoId]
     );
+    return todos;
   }
 
   editToDo(toDoEditedProperties) {
@@ -127,7 +130,8 @@ export default class State {
       return;
     }
     if (!toDoEditedProperties.id || !(toDoEditedProperties.id in this.#toDos)) {
-      return this.addToDo(toDoEditedProperties);
+      const newId = this.addToDo(toDoEditedProperties);
+      return newId;
     }
     const toDo = this.#toDos[toDoEditedProperties.id];
     if ("projects" in toDoEditedProperties) {
@@ -254,7 +258,7 @@ export default class State {
 
   deleteProject(projectToDeleteName) {
     if (!(projectToDeleteName in this.#projects)) return;
-    if (projectToDeleteName in this.#fixedProjects) return;
+    if (this.#fixedProjects.includes(projectToDeleteName)) return;
     Object.values(this.#toDos).forEach((toDo) => {
       toDo.projects = toDo.projects.filter(
         (project) => project !== projectToDeleteName

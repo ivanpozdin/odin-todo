@@ -1,6 +1,6 @@
 import TrashIcon from "./imgs/trash.svg";
 import ProjectsIcon from "./imgs/projects.svg";
-import doOnShowProjects from "./toDoProjectSectionView.js";
+import generateProjectSelectionContainer from "./toDoProjectSectionView.js";
 import HideIcon from "./imgs/hide-details.svg";
 import ShowIcon from "./imgs/show-details.svg";
 
@@ -33,8 +33,7 @@ const getProjects = function (toDoElement) {
   return projectNames;
 };
 
-const getDate = function (toDoElement) {
-  const dateControl = toDoElement.querySelector('input[type="date"]');
+const getDate = function (dateControl) {
   let date = null;
   if (dateControl?.value) date = new Date(dateControl.valueAsNumber);
   return date;
@@ -84,9 +83,9 @@ const saveToDo = function (toDoContainer, handleEditToDo) {
   if (projects !== null) {
     editedToDo.projects = projects;
   }
-  const date = getDate(toDoContainer);
-  if (date !== null) {
-    editedToDo.date = date;
+  const dateInput = toDoContainer.querySelector('input[type="date"]');
+  if (dateInput) {
+    editedToDo.date = getDate(dateInput);
   }
   const newId = handleEditToDo(editedToDo);
   toDoContainer.dataset.id = newId;
@@ -195,7 +194,8 @@ const doOnShowOrHideDetails = function (
   toDoContainer,
   handleEditToDo,
   descriptionElement,
-  controlsElement
+  controlsElement,
+  projectsElement
 ) {
   const showHideBtn = toDoContainer.querySelector(".view-details-btn");
   showHideBtn.addEventListener("click", () => {
@@ -212,11 +212,29 @@ const doOnShowOrHideDetails = function (
     toDoContainer.querySelector(".view-details-btn img").src = ShowIcon;
     descriptionElement.remove();
     controlsElement.remove();
+    projectsElement.remove();
     const existingProjectsContainer = toDoContainer.querySelector(
       ".project-selection-container"
     );
     if (existingProjectsContainer) {
       existingProjectsContainer.remove();
+    }
+  });
+};
+
+const doOnShowProjects = function (
+  controlsElement,
+  toDoContainer,
+  projectsElement,
+  handleEditToDo
+) {
+  const showProjectsBtn = controlsElement.querySelector(".projects-btn");
+  showProjectsBtn.addEventListener("click", () => {
+    if (toDoContainer.querySelector(".project-selection-container")) {
+      saveToDo(toDoContainer, handleEditToDo);
+      projectsElement.remove();
+    } else {
+      toDoContainer.insertAdjacentElement("beforeend", projectsElement);
     }
   });
 };
@@ -234,28 +252,34 @@ export default function generateToDoElement(
   if (isCompleted && !todo) return;
   const descriptionElement = generateDescriptionElement(todo);
   const controlsElement = generateControlsElement(todo, handleDeleteToDo);
+
   const toDoContainer = createToDoContainer(
     todo,
     isCompleted,
     descriptionElement,
     controlsElement
   );
-  doOnCompleteToDo(toDoContainer, handleCompleteToDo);
-  if (isCompleted) return toDoContainer;
-  doOnShowProjects(
-    controlsElement,
+  const projectsElement = generateProjectSelectionContainer(
     todo?.projects ?? [
       document.querySelector(".content .project-title").textContent,
     ],
     saveToDo.bind(null, toDoContainer, handleEditToDo)
   );
+  doOnCompleteToDo(toDoContainer, handleCompleteToDo);
+  if (isCompleted) return toDoContainer;
   doOnShowOrHideDetails(
     toDoContainer,
     handleEditToDo,
     descriptionElement,
-    controlsElement
+    controlsElement,
+    projectsElement
   );
-
+  doOnShowProjects(
+    controlsElement,
+    toDoContainer,
+    projectsElement,
+    handleEditToDo
+  );
   saveOnBlur(
     toDoContainer,
     descriptionElement,

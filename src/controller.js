@@ -9,6 +9,16 @@ import handleGeneratingNewProject from "./view/newProject.js";
 const fixedProjects = ["inbox", "today", "someday", "anytime"];
 const state = new State(fixedProjects);
 
+const isDateToday = function (date) {
+  if (!date) return false;
+  const today = new Date();
+  return (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  );
+};
+
 const handleProjectClick = function (projectName) {
   generateAllToDosInProject(
     projectName,
@@ -48,7 +58,13 @@ const handleAddNewProject = function (projectName) {
 
 const handleEditToDo = function (toDoEditedProperties) {
   const toDoId = state.editToDo(toDoEditedProperties);
-  if (!state.getToDoProjectsById(toDoId).includes(state.currentProject)) {
+  if (
+    (state.currentProject === "today" &&
+      "date" in toDoEditedProperties &&
+      !isDateToday(new Date(toDoEditedProperties.date))) ||
+    (!["today", "someday", "anytime"].includes(state.currentProject) &&
+      !state.getToDoProjectsById(toDoId).includes(state.currentProject))
+  ) {
     generateAllToDosInProject(
       state.currentProject,
       state.getAllToDosInProject(),

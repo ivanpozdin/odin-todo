@@ -106,18 +106,9 @@ const insertProjectsToProjectContainer = function (
   );
 };
 
-export default function doOnShowProjects(toDoControls, toDoProjects, save) {
-  toDoControls.querySelector(".projects-btn").addEventListener("click", () => {
-    const existingProjectsContainer = toDoControls
-      .closest("li.todo")
-      .querySelector(".project-selection-container");
-    if (existingProjectsContainer) {
-      existingProjectsContainer.remove();
-      return;
-    }
-    const projectsContainer = createProjectsContainer();
-    insertProjectsToProjectContainer(projectsContainer, toDoProjects, save);
-    toDoControls.insertAdjacentElement("afterend", projectsContainer);
-    handleAddingNewProjectToUI(projectsContainer, save);
-  });
+export default function generateProjectSelectionContainer(toDoProjects, save) {
+  const projectsContainer = createProjectsContainer();
+  insertProjectsToProjectContainer(projectsContainer, toDoProjects, save);
+  handleAddingNewProjectToUI(projectsContainer, save);
+  return projectsContainer;
 }
