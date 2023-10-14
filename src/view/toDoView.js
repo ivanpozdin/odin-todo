@@ -42,7 +42,7 @@ const getDate = function getDate(dateControl) {
   return date;
 };
 
-const saveOnBlur = function saveOnBlur(todoElements, save) {
+const saveOnBlurOrInput = function saveOnBlur(todoElements, save) {
   const { toDoContainer, descriptionElement, controlsElement } = todoElements;
   const titleElement = toDoContainer.querySelector(".title-todo");
 
@@ -55,6 +55,7 @@ const saveOnBlur = function saveOnBlur(todoElements, save) {
       if (elementCopy.textContent === "") {
         elementCopy.innerHTML = "";
       }
+      save();
     });
   });
 
@@ -87,7 +88,7 @@ const saveToDo = function saveToDo(toDoContainer, handlers) {
   if (dateInput) {
     editedToDo.date = getDate(dateInput);
   }
-  const newId = handlers.handleEditToDo(editedToDo, handlers);
+  const newId = handlers.handleEditToDo(editedToDo);
   const toDoContainerCopy = toDoContainer;
   toDoContainerCopy.dataset.id = newId;
 };
@@ -127,7 +128,7 @@ const doOnCompleteToDo = function doOnCompleteToDo(toDoContainer, handlers) {
       toDoContainer.remove();
       return;
     }
-    handlers.handleCompleteToDo(toDoContainer.dataset.id, handlers);
+    handlers.handleCompleteToDo(toDoContainer.dataset.id);
   });
 };
 
@@ -266,7 +267,7 @@ const doOnShowProjects = function doOnShowProjects(todoElements, save) {
  * @return {HTMLElement?} To-Do Container element
  *
  */
-export default function generateToDoElement(todo, handlers) {
+export default function generateToDoElement(handlers, todo = null) {
   const projectTitle = document.querySelector(
     ".content .project-title"
   ).textContent;
@@ -290,7 +291,7 @@ export default function generateToDoElement(todo, handlers) {
   doOnCompleteToDo(toDoContainer, handlers);
   doOnShowOrHideDetails(todoElements, save);
   doOnShowProjects(todoElements, save);
-  saveOnBlur(todoElements, save);
+  saveOnBlurOrInput(todoElements, save);
 
   return toDoContainer;
 }

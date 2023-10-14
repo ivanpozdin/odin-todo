@@ -1,10 +1,7 @@
-/* eslint-disable import/extensions */
-import generateToDoElement from "./toDoView.js";
-
 export default function generateAllToDosInProject(
   projectName,
   todos,
-  handlers
+  generateToDoElement
 ) {
   const deleteProjectBtn = document.querySelector(
     ".content-header>.delete-project-btn"
@@ -30,7 +27,7 @@ export default function generateAllToDosInProject(
   toDoListElement.innerHTML = "";
   if (!todos) return;
   todos.forEach((todo) => {
-    const toDoElement = generateToDoElement(todo, handlers);
+    const toDoElement = generateToDoElement(todo);
     toDoListElement.insertAdjacentElement("beforeend", toDoElement);
   });
 }

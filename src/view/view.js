@@ -7,7 +7,6 @@ import CompletedIcon from "./imgs/completed.svg";
 
 export default function generateView(
   handleProjectClick,
-  handlers,
   handleDeleteProjectOnClick
 ) {
   const viewHtml = `
@@ -48,8 +47,7 @@ export default function generateView(
   projects.forEach((project) => {
     project.addEventListener("click", () => {
       handleProjectClick(
-        project.querySelector(".todo-project-title").textContent,
-        handlers
+        project.querySelector(".todo-project-title").textContent
       );
     });
   });
@@ -60,6 +58,6 @@ export default function generateView(
     const projectTitle = document.querySelector(
       ".content-header>.project-title"
     ).textContent;
-    handleDeleteProjectOnClick(projectTitle, handlers);
+    handleDeleteProjectOnClick(projectTitle);
   });
 }

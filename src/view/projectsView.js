@@ -7,18 +7,14 @@ const generateOneProjectElement = function generateOneProjectElement(
   return projectElement;
 };
 
-export default function generateProjectsView(
-  projectNames,
-  handleProjectClick,
-  handlers
-) {
+export default function generateProjectsView(projectNames, handleProjectClick) {
   const projectContainer = document.querySelector(".user-projects-container");
   projectContainer.innerHTML = "";
   projectNames.forEach((projectName) => {
     const newProjectElement = generateOneProjectElement(projectName);
     projectContainer.insertAdjacentElement("afterbegin", newProjectElement);
     newProjectElement.addEventListener("click", () => {
-      handleProjectClick(newProjectElement.textContent, handlers);
+      handleProjectClick(newProjectElement.textContent);
     });
   });
 }
