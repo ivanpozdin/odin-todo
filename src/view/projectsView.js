@@ -1,4 +1,6 @@
-const generateOneProjectElement = function (projectName) {
+const generateOneProjectElement = function generateOneProjectElement(
+  projectName
+) {
   const projectElement = document.createElement("div");
   projectElement.classList.add("todos-project");
   projectElement.textContent = projectName;
@@ -11,7 +13,7 @@ export default function generateProjectsView(projectNames, handleProjectClick) {
   projectNames.forEach((projectName) => {
     const newProjectElement = generateOneProjectElement(projectName);
     projectContainer.insertAdjacentElement("afterbegin", newProjectElement);
-    newProjectElement.addEventListener("click", function (e) {
+    newProjectElement.addEventListener("click", () => {
       handleProjectClick(newProjectElement.textContent);
     });
   });

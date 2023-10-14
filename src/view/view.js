@@ -47,7 +47,7 @@ export default function generateView(
   document.querySelector("body").innerHTML = viewHtml;
   const projects = [...document.querySelectorAll(".todos-project")];
   projects.forEach((project) => {
-    project.addEventListener("click", function (e) {
+    project.addEventListener("click", () => {
       handleProjectClick(
         project.querySelector(".todo-project-title").textContent
       );

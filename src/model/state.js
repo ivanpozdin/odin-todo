@@ -1,12 +1,20 @@
 import ToDo from "./toDo.js";
+
 export default class State {
   #toDos = {};
+
   #completedToDos = {};
+
   #projects = {};
+
   #currentProject = "inbox";
+
   #fixedProjects;
+
   constructor(fixedProjects) {
-    fixedProjects.forEach((project) => (this.#projects[project] = []));
+    fixedProjects.forEach((project) => {
+      this.#projects[project] = [];
+    });
     this.#fixedProjects = fixedProjects;
     this.#getLocalStorage();
   }
@@ -20,13 +28,13 @@ export default class State {
   }
 
   set currentProject(projectName) {
-    if (projectName && this.#projects.hasOwnProperty(projectName)) {
+    if (projectName && projectName in this.#projects) {
       this.#currentProject = projectName;
     }
   }
 
   addToDo(toDoProperties) {
-    if (this.#currentProject === "completed") return;
+    if (this.#currentProject === "completed") return null;
 
     let projectWithCurrent = [this.currentProject];
     if (toDoProperties.projects) {
@@ -37,10 +45,10 @@ export default class State {
     projectWithCurrent = projectWithCurrent.filter(
       (project) => project === "inbox" || !this.#fixedProjects.includes(project)
     );
+    const toDoPropertiesWithCurrentProject = { ...toDoProperties };
+    toDoPropertiesWithCurrentProject.projects = projectWithCurrent;
 
-    toDoProperties.projects = projectWithCurrent;
-
-    const toDo = ToDo(toDoProperties);
+    const toDo = ToDo(toDoPropertiesWithCurrentProject);
 
     this.#toDos[toDo.id] = toDo;
 
@@ -72,7 +80,7 @@ export default class State {
   }
 
   #removeToDoFromCompleted(toDoId) {
-    if (!(toDoId in this.#completedToDos)) return;
+    if (!(toDoId in this.#completedToDos)) return null;
     const toDoToDelete = this.#completedToDos[toDoId];
     delete this.#completedToDos[toDoId];
     this.#setLocalStorage();
@@ -80,7 +88,7 @@ export default class State {
   }
 
   #removeToDoFromActiveToDos(toDoId) {
-    if (!(toDoId in this.#toDos)) return;
+    if (!(toDoId in this.#toDos)) return null;
     this.#toDos[toDoId].projects.forEach((project) => {
       const deleteIndex = this.#projects[project].findIndex(
         (curToDoId) => curToDoId === toDoId
@@ -127,7 +135,7 @@ export default class State {
 
   editToDo(toDoEditedProperties) {
     if (this.#currentProject === "completed") {
-      return;
+      return null;
     }
     if (!toDoEditedProperties.id || !(toDoEditedProperties.id in this.#toDos)) {
       const newId = this.addToDo(toDoEditedProperties);
@@ -259,16 +267,15 @@ export default class State {
   deleteProject(projectToDeleteName) {
     if (!(projectToDeleteName in this.#projects)) return;
     if (this.#fixedProjects.includes(projectToDeleteName)) return;
-    Object.values(this.#toDos).forEach((toDo) => {
-      toDo.projects = toDo.projects.filter(
+    Object.keys(this.#toDos).forEach((id) => {
+      this.#toDos[id].projects = this.#toDos[id].projects.filter(
         (project) => project !== projectToDeleteName
       );
     });
-
-    Object.values(this.#completedToDos).forEach((toDo) => {
-      toDo.projects = toDo.projects.filter(
-        (project) => project !== projectToDeleteName
-      );
+    Object.keys(this.#completedToDos).forEach((id) => {
+      this.#completedToDos[id].projects = this.#completedToDos[
+        id
+      ].projects.filter((project) => project !== projectToDeleteName);
     });
     delete this.#projects[projectToDeleteName];
     this.#currentProject = "inbox";
@@ -281,9 +288,7 @@ export default class State {
   }
 
   get #somedayToDos() {
-    const somedayToDos = Object.values(this.#toDos).filter((toDo) => {
-      return toDo.date;
-    });
+    const somedayToDos = Object.values(this.#toDos).filter((toDo) => toDo.date);
     somedayToDos.sort((todoA, todoB) => -todoA.id + todoB.id);
     return somedayToDos;
   }
