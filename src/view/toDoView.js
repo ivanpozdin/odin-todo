@@ -4,7 +4,10 @@ import generateProjectSelectionContainer from "./toDoProjectSectionView.js";
 import HideIcon from "./imgs/hide-details.svg";
 import ShowIcon from "./imgs/show-details.svg";
 
-const generateToDoHeaderHtml = function (todo, isCompleted) {
+const generateToDoHeaderHtml = function generateToDoHeaderHtml(
+  todo,
+  isCompleted
+) {
   const toDoHtml = `
   <input type="checkbox" ${
     isCompleted ? "checked" : ""
@@ -19,7 +22,7 @@ const generateToDoHeaderHtml = function (todo, isCompleted) {
   return toDoHtml;
 };
 
-const getProjects = function (toDoElement) {
+const getProjects = function getProjects(toDoElement) {
   if (!document.querySelector(".project-selection-container")) {
     return null;
   }
@@ -33,13 +36,13 @@ const getProjects = function (toDoElement) {
   return projectNames;
 };
 
-const getDate = function (dateControl) {
+const getDate = function getDate(dateControl) {
   let date = null;
   if (dateControl?.value) date = new Date(dateControl.valueAsNumber);
   return date;
 };
 
-const saveOnBlur = function (todoElements, save) {
+const saveOnBlur = function saveOnBlur(todoElements, save) {
   const { toDoContainer, descriptionElement, controlsElement } = todoElements;
   const titleElement = toDoContainer.querySelector(".title-todo");
 
@@ -47,9 +50,10 @@ const saveOnBlur = function (todoElements, save) {
     element.addEventListener("blur", () => {
       save();
     });
-    element.addEventListener("input", () => {
-      if (element.textContent === "") {
-        element.innerHTML = "";
+    const elementCopy = element;
+    elementCopy.addEventListener("input", () => {
+      if (elementCopy.textContent === "") {
+        elementCopy.innerHTML = "";
       }
     });
   });
@@ -60,7 +64,7 @@ const saveOnBlur = function (todoElements, save) {
   });
 };
 
-const saveToDo = function (toDoContainer, handleEditToDo) {
+const saveToDo = function saveToDo(toDoContainer, handlers) {
   const [titleElement, descriptionElement] = [
     toDoContainer.querySelector(".title-todo"),
     toDoContainer.querySelector(".description-todo"),
@@ -83,11 +87,12 @@ const saveToDo = function (toDoContainer, handleEditToDo) {
   if (dateInput) {
     editedToDo.date = getDate(dateInput);
   }
-  const newId = handleEditToDo(editedToDo);
-  toDoContainer.dataset.id = newId;
+  const newId = handlers.handleEditToDo(editedToDo, handlers);
+  const toDoContainerCopy = toDoContainer;
+  toDoContainerCopy.dataset.id = newId;
 };
 
-const createToDoContainer = function (
+const createToDoContainer = function createToDoContainer(
   todo,
   isCompleted,
   descriptionElement,
@@ -102,7 +107,7 @@ const createToDoContainer = function (
 
   const title = toDoContainer.querySelector(".title-todo");
   title.addEventListener("input", () => {
-    if (title.textContent == "") {
+    if (title.textContent === "") {
       title.innerHTML = "";
     }
   });
@@ -115,18 +120,18 @@ const createToDoContainer = function (
   return toDoContainer;
 };
 
-const doOnCompleteToDo = function (toDoContainer, handleCompleteToDo) {
+const doOnCompleteToDo = function doOnCompleteToDo(toDoContainer, handlers) {
   const checkbox = toDoContainer.querySelector(".complete-todo-checkbox");
   checkbox.addEventListener("click", () => {
     if (!toDoContainer.dataset.id) {
       toDoContainer.remove();
       return;
     }
-    handleCompleteToDo(toDoContainer.dataset.id);
+    handlers.handleCompleteToDo(toDoContainer.dataset.id, handlers);
   });
 };
 
-const generateDescriptionElement = function (toDo) {
+const generateDescriptionElement = function generateDescriptionElement(toDo) {
   const descriptionElement = document.createElement("div");
   descriptionElement.classList.add("description-todo");
   const projectTitle = document.querySelector(
@@ -139,7 +144,7 @@ const generateDescriptionElement = function (toDo) {
   descriptionElement.textContent = toDo ? toDo.description : "";
 
   descriptionElement.addEventListener("input", () => {
-    if (descriptionElement.textContent == "") {
+    if (descriptionElement.textContent === "") {
       descriptionElement.innerHTML = "";
     }
   });
@@ -147,12 +152,10 @@ const generateDescriptionElement = function (toDo) {
   return descriptionElement;
 };
 
-const generateControlsElement = function (
+const generateControlsElement = function generateControlsElement(
   toDo,
-  handleDeleteToDo,
-  toDoContainer
+  handlers
 ) {
-  console.log("generateControlsElement");
   const isCompleted =
     document.querySelector(".content-header .project-title").textContent ===
     "completed";
@@ -178,20 +181,19 @@ const generateControlsElement = function (
   }
   if (toDo?.date) {
     dateInput.valueAsDate = new Date(toDo.date);
-    console.log(dateInput.valueAsDate);
   }
 
   controls.querySelector(".remove-todo-btn")?.addEventListener("click", () => {
-    toDoContainer = controls.closest("li.todo");
+    const toDoContainer = controls.closest("li.todo");
     if (!toDoContainer) return;
-    handleDeleteToDo(toDoContainer.dataset.id);
+    handlers.handleDeleteToDo(toDoContainer.dataset.id, handlers);
     toDoContainer.remove();
   });
 
   return controls;
 };
 
-const showDetails = function (todoElements) {
+const showDetails = function showDetails(todoElements) {
   const { toDoContainer, descriptionElement, controlsElement } = todoElements;
   if (toDoContainer.dataset.isHidden !== "true") return;
   toDoContainer.querySelector(".view-details-btn img").src = HideIcon;
@@ -201,7 +203,7 @@ const showDetails = function (todoElements) {
   descriptionElement.focus();
 };
 
-const hideDetails = function (todoElements, save) {
+const hideDetails = function hideDetails(todoElements, save) {
   const {
     toDoContainer,
     descriptionElement,
@@ -222,7 +224,10 @@ const hideDetails = function (todoElements, save) {
   }
 };
 
-const doOnShowOrHideDetails = function (todoElements, save) {
+const doOnShowOrHideDetails = function doOnShowOrHideDetails(
+  todoElements,
+  save
+) {
   const { toDoContainer } = todoElements;
   const showHideBtn = toDoContainer.querySelector(".view-details-btn");
   showHideBtn.addEventListener("click", () => {
@@ -239,7 +244,7 @@ const doOnShowOrHideDetails = function (todoElements, save) {
     });
 };
 
-const doOnShowProjects = function (todoElements, save) {
+const doOnShowProjects = function doOnShowProjects(todoElements, save) {
   const { toDoContainer, controlsElement, projectsElement } = todoElements;
   const showProjectsBtn = controlsElement.querySelector(".projects-btn");
   showProjectsBtn.addEventListener("click", () => {
@@ -252,33 +257,37 @@ const doOnShowProjects = function (todoElements, save) {
   });
 };
 
-export default function generateToDoElement(
-  todo = null,
-  handleDeleteToDo,
-  handleEditToDo,
-  handleCompleteToDo
-) {
+/**
+ *
+ * @param {*} todo
+ * @param {*} handleDeleteToDo
+ * @param {*} handleEditToDo
+ * @param {*} handleCompleteToDo
+ * @return {HTMLElement?} To-Do Container element
+ *
+ */
+export default function generateToDoElement(todo, handlers) {
   const projectTitle = document.querySelector(
     ".content .project-title"
   ).textContent;
   const isCompleted = projectTitle === "completed";
-  if (isCompleted && !todo) return;
+  if (isCompleted && !todo) return null;
   const descriptionElement = generateDescriptionElement(todo);
-  const controlsElement = generateControlsElement(todo, handleDeleteToDo);
+  const controlsElement = generateControlsElement(todo, handlers);
   const toDoContainer = createToDoContainer(
     todo,
     isCompleted,
     descriptionElement,
     controlsElement
   );
-  const save = saveToDo.bind(null, toDoContainer, handleEditToDo);
+  const save = saveToDo.bind(null, toDoContainer, handlers);
   const todoElements = {
     toDoContainer,
     descriptionElement,
     controlsElement,
     projectsElement: generateProjectSelectionContainer(todo?.projects, save),
   };
-  doOnCompleteToDo(toDoContainer, handleCompleteToDo);
+  doOnCompleteToDo(toDoContainer, handlers);
   doOnShowOrHideDetails(todoElements, save);
   doOnShowProjects(todoElements, save);
   saveOnBlur(todoElements, save);

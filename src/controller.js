@@ -9,7 +9,7 @@ import handleGeneratingNewProject from "./view/newProject.js";
 const fixedProjects = ["inbox", "today", "someday", "anytime"];
 const state = new State(fixedProjects);
 
-const isDateToday = function (date) {
+const isDateToday = function isGivenDateToday(date) {
   if (!date) return false;
   const today = new Date();
   return (
@@ -18,45 +18,27 @@ const isDateToday = function (date) {
     date.getFullYear() === today.getFullYear()
   );
 };
-
-const handleProjectClick = function (projectName) {
-  generateAllToDosInProject(
-    projectName,
-    state.getAllToDosInProject(projectName),
-    handleDeleteToDo,
-    handleEditToDo,
-    handleCompleteToDo
-  );
+const handleDeleteToDo = function handleDeleteToDo(id) {
+  state.removeToDo(id);
 };
-
-const handleDeleteProject = function (projectName) {
-  state.deleteProject(projectName);
-  generateAllToDosInProject(
-    state.currentProject,
-    state.getAllToDosInProject(),
-    handleDeleteToDo,
-    handleEditToDo,
-    handleCompleteToDo
-  );
-  generateProjectsView(state.userProjectNames, handleProjectClick);
-};
-
-const handleCompleteToDo = function (id) {
+const handleCompleteToDo = function handleCompleteToDo(id, handlers) {
   state.completeToDo(id);
   generateAllToDosInProject(
     state.currentProject,
     state.getAllToDosInProject(),
-    handleDeleteToDo,
-    handleEditToDo,
-    handleCompleteToDo
+    handlers
   );
 };
-const handleAddNewProject = function (projectName) {
-  state.addProject(projectName);
-  generateProjectsView(state.userProjectNames, handleProjectClick);
+
+const handleProjectClick = function handleProjectClick(projectName, handlers) {
+  generateAllToDosInProject(
+    projectName,
+    state.getAllToDosInProject(projectName),
+    handlers
+  );
 };
 
-const handleEditToDo = function (toDoEditedProperties) {
+const handleEditToDo = function handleEditToDo(toDoEditedProperties, handlers) {
   const toDoId = state.editToDo(toDoEditedProperties);
   const isTodayChanged =
     state.currentProject === "today" &&
@@ -75,30 +57,44 @@ const handleEditToDo = function (toDoEditedProperties) {
     generateAllToDosInProject(
       state.currentProject,
       state.getAllToDosInProject(),
-      handleDeleteToDo,
-      handleEditToDo,
-      handleCompleteToDo
+      handlers
     );
   }
-  generateProjectsView(state.userProjectNames, handleProjectClick);
+  generateProjectsView(state.userProjectNames, handleProjectClick, handlers);
   return toDoId;
 };
 
-const handleDeleteToDo = function (id) {
-  state.removeToDo(id);
-};
-
-const init = function () {
-  generateView(handleProjectClick, handleDeleteProject);
-  handleGeneratingNewToDo(handleDeleteToDo, handleEditToDo, handleCompleteToDo);
-  handleGeneratingNewProject(handleAddNewProject);
-  generateProjectsView(state.userProjectNames, handleProjectClick);
+const handleDeleteProject = function handleDeleteProject(
+  projectName,
+  handlers
+) {
+  state.deleteProject(projectName);
   generateAllToDosInProject(
     state.currentProject,
     state.getAllToDosInProject(),
-    handleDeleteToDo,
-    handleEditToDo,
-    handleCompleteToDo
+    handlers
+  );
+  generateProjectsView(state.userProjectNames, handleProjectClick, handlers);
+};
+
+const handleAddNewProject = function handleAddNewProject(
+  projectName,
+  handlers
+) {
+  state.addProject(projectName);
+  generateProjectsView(state.userProjectNames, handleProjectClick, handlers);
+};
+
+const init = function startApplication() {
+  const handlers = { handleDeleteToDo, handleEditToDo, handleCompleteToDo };
+  generateView(handleProjectClick, handlers, handleDeleteProject);
+  handleGeneratingNewToDo(handlers);
+  handleGeneratingNewProject(handleAddNewProject, handlers);
+  generateProjectsView(state.userProjectNames, handleProjectClick, handlers);
+  generateAllToDosInProject(
+    state.currentProject,
+    state.getAllToDosInProject(),
+    handlers
   );
 };
 init();
